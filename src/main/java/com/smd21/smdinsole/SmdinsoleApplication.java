@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-@SpringBootApplication(scanBasePackages = {"kr.smd21.smdinsole"})
+@SpringBootApplication(scanBasePackages = {"com.smd21.smdinsole"})
 @EnableAutoConfiguration(exclude = {DataSourceTransactionManagerAutoConfiguration.class, DataSourceAutoConfiguration.class, MybatisAutoConfiguration.class})
 @EnableTransactionManagement
 @EnableSwagger2
