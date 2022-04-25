@@ -1,0 +1,65 @@
+project:
+  name: smdinsole
+
+spring:
+  profiles:
+    active: ${spring.profiles.active}
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+logging:
+  file:
+    path: C:\home\smdinsole\logs\logback\
+datasources:
+  - name: rion-authm
+    base-package: kr.richnco.rion.*.**.dao
+    aop-execution: kr.richnco.rion.authm..service.*.*(..)
+    data-source:
+      driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+      jdbcUrl: jdbc:log4jdbc:mysql://192.168.4.26:3306/rion_authm?characterEncoding=UTF-8&serverTimezone=UTC&noAccessToProcedureBodies=true&useSSL=false&allowMultiQueries=true&autoReconnect=true
+      username: rion_authm
+      password: e=+N2+G74vYK&TUG
+      maximumPoolSize: 5
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+logging:
+  file:
+    path: C:\home\smdinsole\logs\logback\
+datasources:
+  - name: rion-authm
+    base-package: kr.richnco.rion.*.**.dao
+    aop-execution: kr.richnco.rion.authm..service.*.*(..)
+    data-source:
+      driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+      jdbcUrl: jdbc:log4jdbc:mysql://192.168.4.26:3306/rion_authm?characterEncoding=UTF-8&serverTimezone=UTC&noAccessToProcedureBodies=true&useSSL=false&allowMultiQueries=true&autoReconnect=true
+      username: rion_authm
+      password: e=+N2+G74vYK&TUG
+      maximumPoolSize: 5
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+logging:
+  file:
+    path: C:\home\smdinsole\logs\logback\
+datasources:
+  - name: rion-authm
+    base-package: kr.richnco.rion.*.**.dao
+    aop-execution: kr.richnco.rion.authm..service.*.*(..)
+    data-source:
+      driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+      jdbcUrl: jdbc:log4jdbc:mysql://192.168.4.26:3306/rion_authm?characterEncoding=UTF-8&serverTimezone=UTC&noAccessToProcedureBodies=true&useSSL=false&allowMultiQueries=true&autoReconnect=true
+      username: rion_authm
+      password: e=+N2+G74vYK&TUG
+      maximumPoolSize: 5
