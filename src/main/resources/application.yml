@@ -16,14 +16,14 @@ logging:
   file:
     path: C:\home\smdinsole\logs\logback\
 datasources:
-  - name: rion-authm
-    base-package: kr.richnco.rion.*.**.dao
-    aop-execution: kr.richnco.rion.authm..service.*.*(..)
+  - name: insole
+    base-package: com.smd21.smdinsole.**.dao
+    aop-execution: com.smd21.smdinsole..service.*.*(..)
     data-source:
       driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      jdbcUrl: jdbc:log4jdbc:mysql://192.168.4.26:3306/rion_authm?characterEncoding=UTF-8&serverTimezone=UTC&noAccessToProcedureBodies=true&useSSL=false&allowMultiQueries=true&autoReconnect=true
-      username: rion_authm
-      password: e=+N2+G74vYK&TUG
+      jdbcUrl: jdbc:log4jdbc:mysql://105.0.154.57:3306/smdinsole?characterEncoding=UTF-8&serverTimezone=UTC&noAccessToProcedureBodies=true&useSSL=false&allowMultiQueries=true&autoReconnect=true
+      username: insole
+      password: insole
       maximumPoolSize: 5
 
 ---
@@ -35,9 +35,9 @@ logging:
   file:
     path: C:\home\smdinsole\logs\logback\
 datasources:
-  - name: rion-authm
-    base-package: kr.richnco.rion.*.**.dao
-    aop-execution: kr.richnco.rion.authm..service.*.*(..)
+  - name: insole
+    base-package: com.smd21.smdinsole.**.dao
+    aop-execution: com.smd21.smdinsole..service.*.*(..)
     data-source:
       driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
       jdbcUrl: jdbc:log4jdbc:mysql://192.168.4.26:3306/rion_authm?characterEncoding=UTF-8&serverTimezone=UTC&noAccessToProcedureBodies=true&useSSL=false&allowMultiQueries=true&autoReconnect=true
@@ -54,9 +54,9 @@ logging:
   file:
     path: C:\home\smdinsole\logs\logback\
 datasources:
-  - name: rion-authm
-    base-package: kr.richnco.rion.*.**.dao
-    aop-execution: kr.richnco.rion.authm..service.*.*(..)
+  - name: insole
+    base-package: com.smd21.smdinsole.**.dao
+    aop-execution: com.smd21.smdinsole..service.*.*(..)
     data-source:
       driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
       jdbcUrl: jdbc:log4jdbc:mysql://192.168.4.26:3306/rion_authm?characterEncoding=UTF-8&serverTimezone=UTC&noAccessToProcedureBodies=true&useSSL=false&allowMultiQueries=true&autoReconnect=true

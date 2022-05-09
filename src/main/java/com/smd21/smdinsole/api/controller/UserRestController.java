@@ -1,10 +1,9 @@
-package com.smd21.smdinsole.user.controller;
+package com.smd21.smdinsole.api.controller;
 
-import com.smd21.smdinsole.user.model.GuardianModel;
-import com.smd21.smdinsole.user.service.UserService;
+import com.smd21.smdinsole.api.model.GuardianModel;
+import com.smd21.smdinsole.api.model.ShoesInfoModel;
+import com.smd21.smdinsole.api.service.UserService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -34,5 +33,12 @@ public class UserRestController {
     public String getToken(@RequestBody GuardianModel guard) throws Exception {
 
         return userService.getToken(guard.getGuardPhone(), guard.getGuadrPwd());
+    }
+
+    @ApiOperation(value = "단말정보 입력", notes="단말기 정보 입력")
+    @RequestMapping(value = "/ins/shoes", method = RequestMethod.POST)
+    public long getToken(@RequestBody ShoesInfoModel shoesInfo) throws Exception {
+
+        return userService.insShoesInfo(shoesInfo);
     }
 }

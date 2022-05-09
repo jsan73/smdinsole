@@ -1,4 +1,4 @@
-package com.smd21.smdinsole.user.model;
+package com.smd21.smdinsole.api.model;
 
 import lombok.Data;
 

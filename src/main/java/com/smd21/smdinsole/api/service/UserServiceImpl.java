@@ -1,8 +1,10 @@
-package com.smd21.smdinsole.user.service;
+package com.smd21.smdinsole.api.service;
 
+import com.smd21.smdinsole.api.dao.UserDao;
+import com.smd21.smdinsole.api.model.ShoesInfoModel;
 import com.smd21.smdinsole.app.security.provider.JwtTokenProvider;
 import com.smd21.smdinsole.model.TokenUserModel;
-import com.smd21.smdinsole.user.model.GuardianModel;
+import com.smd21.smdinsole.api.model.GuardianModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,9 @@ import java.util.List;
 public class UserServiceImpl implements UserService{
     @Autowired
     JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    UserDao userDao;
 
     @Override
     public GuardianModel loadUserByUserNo(String guardPhone) throws UsernameNotFoundException {
@@ -43,5 +48,10 @@ public class UserServiceImpl implements UserService{
         String token = jwtTokenProvider.createToken(tokenUserModel);
 
         return token;
+    }
+
+    @Override
+    public long insShoesInfo(ShoesInfoModel shoseInfo) {
+        return userDao.insShoesInfo(shoseInfo);
     }
 }
