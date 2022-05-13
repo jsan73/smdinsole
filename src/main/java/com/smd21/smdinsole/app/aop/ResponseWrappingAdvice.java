@@ -2,7 +2,7 @@ package com.smd21.smdinsole.app.aop;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smd21.smdinsole.app.exception.AppException;
-import com.smd21.smdinsole.model.RestOutModel;
+import com.smd21.smdinsole.common.model.RestOutModel;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

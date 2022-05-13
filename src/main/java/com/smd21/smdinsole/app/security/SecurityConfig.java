@@ -52,7 +52,7 @@ public class SecurityConfig {
                     .antMatchers("/static/**")
                     .antMatchers("/error")
                     .antMatchers("/*/api/token/getkey")
-                    .antMatchers("/*/api/get/token")
+                    .antMatchers("/*/api/guard/get/token")
                     .antMatchers("/*/api/check/alive");
         }
 

@@ -1,24 +1,30 @@
-package com.smd21.smdinsole.api.service;
+package com.smd21.smdinsole.guard.service;
 
-import com.smd21.smdinsole.api.dao.UserDao;
-import com.smd21.smdinsole.api.model.ShoesInfoModel;
 import com.smd21.smdinsole.app.security.provider.JwtTokenProvider;
-import com.smd21.smdinsole.model.TokenUserModel;
-import com.smd21.smdinsole.api.model.GuardianModel;
+import com.smd21.smdinsole.common.model.TokenUserModel;
+import com.smd21.smdinsole.guard.dao.GuardDao;
+import com.smd21.smdinsole.guard.model.GuardianModel;
+import com.smd21.smdinsole.shoes.controller.ShoesRestController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class GuardServiceImpl implements GuardService{
+    final static Logger logger = LoggerFactory.getLogger(GuardServiceImpl.class);
+
     @Autowired
     JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    UserDao userDao;
+    GuardDao guardDao;
 
     @Override
     public GuardianModel loadUserByUserNo(String guardPhone) throws UsernameNotFoundException {
@@ -51,7 +57,19 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public long insShoesInfo(ShoesInfoModel shoseInfo) {
-        return userDao.insShoesInfo(shoseInfo);
+    public GuardianModel insGuardInfo(GuardianModel guardInfo, long shoesNo) throws Exception {
+        guardDao.insGuardian(guardInfo);
+
+//        GuardianModel masterGuard = new GuardianModel();
+//        masterGuard.setMasterGuardNo(guardInfo.getGuardNo());
+//        masterGuard.setGuardNo(guardInfo.getGuardNo());
+//        userDao.updGuardian(masterGuard);
+        if(guardInfo.getMasterGuardNo() == 0) {
+            Map<String, Long> info = new HashMap<String, Long>();
+            info.put("shoesNo", shoesNo);
+            info.put("masterGuardNo", guardInfo.getGuardNo());
+            guardDao.insShoesGuard(info);
+        }
+        return guardInfo;
     }
 }

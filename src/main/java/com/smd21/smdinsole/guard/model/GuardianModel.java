@@ -1,4 +1,4 @@
-package com.smd21.smdinsole.api.model;
+package com.smd21.smdinsole.guard.model;
 
 import lombok.Data;
 
@@ -9,6 +9,6 @@ public class GuardianModel {
     private String guardPhone;
     private long masterGuardNo;
     private String guadrPwd;
-    private char maketigAgreeYN;
+    private char maketigAgreeYn;
     private String regDate;
 }

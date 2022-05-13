@@ -1,8 +1,10 @@
-package com.smd21.smdinsole.model;
+package com.smd21.smdinsole.common.model;
 
 
 import com.smd21.smdinsole.app.exception.AppException;
+import lombok.Getter;
 
+@Getter
 public class RestOutModel<T> {
 
     private String status = "SUCCESS";

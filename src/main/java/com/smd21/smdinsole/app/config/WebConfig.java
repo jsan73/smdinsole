@@ -1,12 +1,18 @@
 package com.smd21.smdinsole.app.config;
 
 
+import com.smd21.smdinsole.app.convert.StringToDoubleConverter;
+import com.smd21.smdinsole.app.convert.StringToIntegerConverter;
+import com.smd21.smdinsole.app.convert.StringToLongConverter;
+import com.smd21.smdinsole.app.view.JsonViewResolver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
@@ -59,14 +65,14 @@ public class WebConfig extends WebMvcConfigurationSupport {
 	}
 
 
-	@Bean
-    public ViewResolver viewResolver() {
-        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-        resolver.setOrder(1);
-        resolver.setPrefix("/WEB-INF/views/");
-        resolver.setSuffix(".jsp");
-        return resolver;
-    }
+//	@Bean
+//    public ViewResolver viewResolver() {
+//        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
+//        resolver.setOrder(1);
+//        resolver.setPrefix("/WEB-INF/views/");
+//        resolver.setSuffix(".jsp");
+//        return resolver;
+//    }
 
     @Bean
 	public ViewResolver contentNegotiatingViewResolver(ContentNegotiationManager manager) {
@@ -77,20 +83,20 @@ public class WebConfig extends WebMvcConfigurationSupport {
 	    List<ViewResolver> resolvers = new ArrayList<ViewResolver>();
 	    resolvers.add(viewResolver());
 	    resolvers.add(fileViewResolver());
-//	    resolvers.add(jsonViewResolver());
+	    resolvers.add(jsonViewResolver());
 ////	    resolvers.add(xmlViewResolver());
 //	    resolvers.add(excelViewResolver());
 	    resolver.setViewResolvers(resolvers);
 	    return resolver;
 	}
 
-//    @Bean
-//    public ViewResolver viewResolver() {
-//        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-//        resolver.setPrefix("/WEB-INF/views/");
-//        resolver.setSuffix(".jsp");
-//        return resolver;
-//    }
+    @Bean
+    public ViewResolver viewResolver() {
+        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
+        resolver.setPrefix("/WEB-INF/views/");
+        resolver.setSuffix(".jsp");
+        return resolver;
+    }
 
     /**
 	 * 파일다운로드 view
@@ -105,43 +111,19 @@ public class WebConfig extends WebMvcConfigurationSupport {
 	/**
 	 * Jackson을 이용한 JSON view
 	 */
-//    @Bean
-//    public ViewResolver jsonViewResolver() {
-//        return new JsonViewResolver();
-//    }
-//
-////    /**
-////	 * Jackson을 이용한 XML view
-////	 */
-////    @Bean
-////    public ViewResolver xmlViewResolver() {
-////        return new XmlViewResolver();
-////    }
-//
-//	/**
-//	 * Apache POI를 이용한 Excel view(XLSX)
-//	 */
-//	@Bean
-//	public ViewResolver excelViewResolver() {
-//	    return new ExcelViewResolver();
-//	}
-//
-//	/**
-//	 * File download view
-//	 */
-//	@Bean("downloadView")
-//	public View fileDownloadView() {
-//		return new DownloadView();
-//	}
-//
-//	/**
-//	 * Converter 추가
-//	 */
-//	@Override
-//	public void addFormatters(FormatterRegistry registry) {
-//        registry.addConverter(new StringToIntegerConverter());
-//        registry.addConverter(new StringToLongConverter());
-//        registry.addConverter(new StringToDoubleConverter());
-//    }
+    @Bean
+    public ViewResolver jsonViewResolver() {
+        return new JsonViewResolver();
+    }
+
+	/**
+	 * Converter 추가
+	 */
+	@Override
+	public void addFormatters(FormatterRegistry registry) {
+        registry.addConverter(new StringToIntegerConverter());
+        registry.addConverter(new StringToLongConverter());
+        registry.addConverter(new StringToDoubleConverter());
+    }
 
 }

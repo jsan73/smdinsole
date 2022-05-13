@@ -3,7 +3,7 @@ package com.smd21.smdinsole.app.security.provider;
 import com.smd21.smdinsole.app.security.SecurityConfig;
 import com.smd21.smdinsole.app.security.service.AuthUserDetails;
 import com.smd21.smdinsole.common.ObjectDataUtil;
-import com.smd21.smdinsole.model.TokenUserModel;
+import com.smd21.smdinsole.common.model.TokenUserModel;
 import io.jsonwebtoken.*;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

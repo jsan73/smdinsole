@@ -1,4 +1,4 @@
-package com.smd21.smdinsole.api.model;
+package com.smd21.smdinsole.shoes.model;
 
 import lombok.Data;
 

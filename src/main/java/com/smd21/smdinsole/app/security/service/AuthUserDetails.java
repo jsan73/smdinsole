@@ -1,6 +1,6 @@
 package com.smd21.smdinsole.app.security.service;
 
-import com.smd21.smdinsole.model.TokenUserModel;
+import com.smd21.smdinsole.common.model.TokenUserModel;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

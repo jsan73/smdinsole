@@ -3,7 +3,7 @@ package com.smd21.smdinsole.app.security.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smd21.smdinsole.app.security.provider.JwtTokenProvider;
 import com.smd21.smdinsole.common.ObjectDataUtil;
-import com.smd21.smdinsole.model.RestOutModel;
+import com.smd21.smdinsole.common.model.RestOutModel;
 import io.jsonwebtoken.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -48,7 +48,9 @@ public class JwtAuthFilter extends GenericFilterBean {
 						&& claims.getBody().containsKey("guardNo")) {
 					request.setAttribute("guardNo", claims.getBody().get("guardNo"));
 				}
-			}catch(Exception e2) {}
+			}catch(Exception e2) {
+				e2.printStackTrace();
+			}
 
 			chain.doFilter(request, response);
 

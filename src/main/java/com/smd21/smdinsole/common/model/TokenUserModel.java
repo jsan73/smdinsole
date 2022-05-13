@@ -1,4 +1,4 @@
-package com.smd21.smdinsole.model;
+package com.smd21.smdinsole.common.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;

@@ -70,8 +70,8 @@ public class SwaggerConfig implements WebMvcConfigurer {
         );
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(this.apiInfo())
+                .globalOperationParameters(global)
                 .select()
-//                .apis(RequestHandlerSelectors.basePackage("kr.smd21"))
                 .apis(RequestHandlerSelectors.any())
 //                .paths(PathSelectors.any())
                 .paths(PathSelectors.ant("/**/api/**"))
