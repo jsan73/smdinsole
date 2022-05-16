@@ -21,7 +21,7 @@ datasources:
     aop-execution: com.smd21.smdinsole..service.*.*(..)
     data-source:
       driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      jdbcUrl: jdbc:log4jdbc:mysql://105.0.154.57:3306/smdinsole?characterEncoding=UTF-8&serverTimezone=UTC&noAccessToProcedureBodies=true&useSSL=false&allowMultiQueries=true&autoReconnect=true
+      jdbcUrl: jdbc:log4jdbc:mysql://105.0.154.57:3306/smdinsole?characterEncoding=UTF-8&serverTimezone=UTC&noAccessToProcedureBodies=true&allowPublicKeyRetrieval=true&useSSL=false&allowMultiQueries=true&autoReconnect=true
       username: insole
       password: insole
       maximumPoolSize: 5
@@ -40,7 +40,7 @@ datasources:
     aop-execution: com.smd21.smdinsole..service.*.*(..)
     data-source:
       driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      jdbcUrl: jdbc:log4jdbc:mysql://105.0.154.57:3306/smdinsole?characterEncoding=UTF-8&serverTimezone=UTC&noAccessToProcedureBodies=true&useSSL=false&allowMultiQueries=true&autoReconnect=true
+      jdbcUrl: jdbc:log4jdbc:mysql://105.0.154.57:3306/smdinsole?characterEncoding=UTF-8&serverTimezone=UTC&noAccessToProcedureBodies=true&allowPublicKeyRetrieval=true&useSSL=false&allowMultiQueries=true&autoReconnect=true
       username: insole
       password: insole
       maximumPoolSize: 5
@@ -59,7 +59,7 @@ datasources:
     aop-execution: com.smd21.smdinsole..service.*.*(..)
     data-source:
       driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      jdbcUrl: jdbc:log4jdbc:mysql://105.0.154.57:3306/smdinsole?characterEncoding=UTF-8&serverTimezone=UTC&noAccessToProcedureBodies=true&useSSL=false&allowMultiQueries=true&autoReconnect=true
+      jdbcUrl: jdbc:log4jdbc:mysql://105.0.154.57:3306/smdinsole?characterEncoding=UTF-8&serverTimezone=UTC&noAccessToProcedureBodies=true&allowPublicKeyRetrieval=true&useSSL=false&allowMultiQueries=true&autoReconnect=true
       username: insole
       password: insole
       maximumPoolSize: 5

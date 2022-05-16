@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.smd21.smdinsole.guard.dao.GuardDao">
 
-    <select id="getGuardian" parameterType="String" resultType="com.smd21.smdinsole.guard.model.GuardianModel">
+    <select id="getGuardian" parameterType="Map" resultType="com.smd21.smdinsole.guard.model.GuardianModel">
         SELECT
             GUARD_NO
              , GUARD_NAME
@@ -15,14 +15,20 @@
             ST_GUARDIAN
         WHERE
             GUARD_PHONE = #{guardPhone}
+            <if test="guardPwd != null and guardPwd != ''" >
+                AND GUARD_PWD = FNC_PW(#{guardPwd}, #{guardPhone})
+            </if>
     </select>
 
+    <update id="updGuardPwd" parameterType="com.smd21.smdinsole.guard.model.GuardianModel">
+        UPDATE ST_GUARDIAN WET GUARD_PWD = FNC_PW(#{guardPwd}, #{guardPhone})
+    </update>
 
     <select id="selGuardianList" parameterType="Long" resultType="com.smd21.smdinsole.guard.model.GuardianModel">
         SELECT
             GUARD_NO
              , GUARD_NAME
-             , GUARD_PHONE
+             , fnc_dec(GUARD_PHONE)
              , MASTER_GUARD_NO
              , GUARD_PWD
              , MAKETING_AGREE_YN
@@ -40,15 +46,15 @@
 
     <insert id="insGuardian" parameterType="com.smd21.smdinsole.guard.model.GuardianModel" useGeneratedKeys="true" keyProperty="guardNo">
         INSERT INTO ST_GUARDIAN (GUARD_NAME, GUARD_PHONE, MASTER_GUARD_NO, MAKETING_AGREE_YN, REG_DATE)
-        VALUES(#{guardName}, #{guardPhone}, #{masterGuardNo}, #{maketigAgreeYn}, DATE_FORMAT(NOW(), '%Y%m%d%H%i%S'))
+        VALUES(#{guardName}, fnc_enc(#{guardPhone}), #{masterGuardNo}, #{maketigAgreeYn}, DATE_FORMAT(NOW(), '%Y%m%d%H%i%S'))
     </insert>
 
     <update id="updGuardian" parameterType="com.smd21.smdinsole.guard.model.GuardianModel">
         UPDATE ST_GUARDIAN
         SET
         <if test="guardName != null and guardName != ''" > GUARD_NAME = #{guardName}, </if>
-        <if test="guardPhone != null and guardPhone != ''" > GUARD_PHONE = #{guardPhone}, </if>
-        <if test="masterGuardNo != null and masterGuardNo != 0" > GUARD_PHONE = #{masterGuardNo}, </if>
+        <if test="guardPhone != null and guardPhone != ''" > GUARD_PHONE = fnc_enc(#{guardPhone}), </if>
+        <if test="masterGuardNo != null and masterGuardNo != 0" > MASTER_GUARD_NO = #{masterGuardNo}, </if>
         <if test="maketigAgreeYn != null and maketigAgreeYn != ''" > MAKETING_AGREE_YN = #{maketigAgreeYn}, </if>
         WHERE
         GUARD_NO = #{guardNo}

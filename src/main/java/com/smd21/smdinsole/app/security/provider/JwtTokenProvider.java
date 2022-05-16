@@ -79,7 +79,7 @@ public class JwtTokenProvider {
 		userDetails.setRoles(tokenUser.getRoles());
 		userDetails.setAccessToken(token);
 
-		userDetails.setUserNo(tokenUser.getUserNo());
+		//userDetails.setUserNo(tokenUser.getGuardNo());
 
 		
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();

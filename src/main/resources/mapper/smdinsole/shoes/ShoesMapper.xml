@@ -58,7 +58,7 @@
             SHOES_NO = #{shoesNo}
     </update>
 
-    <insert id="insActiveRange" parameterType="om.smd21.smdinsole.shoes.model.ActiveRangeModel" useGeneratedKeys="true" keyProperty="rangeNo">
+    <insert id="insActiveRange" parameterType="com.smd21.smdinsole.shoes.model.ActiveRangeModel" useGeneratedKeys="true" keyProperty="rangeNo">
         INSERT INTO ST_ACTIVE_RANGE (
             RANGE_NAME
             , SHOES_NO
@@ -105,7 +105,7 @@
         ORDER BY AR.SHOES_NO
     </select>
 
-    <insert id="insLocation" parameterType="om.smd21.smdinsole.shoes.model.LocationModel" useGeneratedKeys="true" keyProperty="locationNo">
+    <insert id="insLocation" parameterType="com.smd21.smdinsole.shoes.model.LocationModel" useGeneratedKeys="true" keyProperty="locationNo">
         INSERT INTO ST_LOCATION (
             SHOES_NO
             , LATITUDE

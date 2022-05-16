@@ -8,6 +8,7 @@ import com.smd21.smdinsole.shoes.controller.ShoesRestController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -26,14 +27,13 @@ public class GuardServiceImpl implements GuardService{
     @Autowired
     GuardDao guardDao;
 
-    @Override
-    public GuardianModel loadUserByUserNo(String guardPhone) throws UsernameNotFoundException {
-        GuardianModel guardModel = new GuardianModel();
-        guardModel.setGuardNo(1000);
-        guardModel.setGuardPhone("01052490965");
-        guardModel.setGuardName("보호자1");
-        guardModel.setMasterGuardNo(1000);
+    private GuardianModel loadUserByUserNo(String guardPhone, String pwd) throws UsernameNotFoundException {
+        Map<String, String> loginInfo = new HashMap<>();
 
+        loginInfo.put("guardPhone", guardPhone);
+        loginInfo.put("guardPwd", pwd);
+
+        GuardianModel guardModel = guardDao.getGuardian(loginInfo);
         if(guardModel != null) return guardModel;
         else throw new UsernameNotFoundException("FAIL");
     }
@@ -42,10 +42,9 @@ public class GuardServiceImpl implements GuardService{
     public String getToken(String phoneNumber, String pwd) {
 
         TokenUserModel tokenUserModel = new TokenUserModel();
-        GuardianModel guardianModel = this.loadUserByUserNo(phoneNumber);
-        tokenUserModel.setUserNo(0);
-        tokenUserModel.setGuardPhone(phoneNumber);
-        tokenUserModel.setShoseNo(1000);
+        GuardianModel guardianModel = this.loadUserByUserNo(phoneNumber, pwd);
+
+        tokenUserModel.setGuardPhone(guardianModel.getGuardPhone());
         tokenUserModel.setMasterGuardNo(guardianModel.getMasterGuardNo());
         tokenUserModel.setGuardNo(guardianModel.getGuardNo());
         String[] arrRoles = {"ROLE_ACCESS"};
@@ -54,6 +53,22 @@ public class GuardServiceImpl implements GuardService{
         String token = jwtTokenProvider.createToken(tokenUserModel);
 
         return token;
+    }
+
+    @Override
+    public GuardianModel changePassword(String password, String newPassword) {
+        try {
+            TokenUserModel user = (TokenUserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+            GuardianModel guardianModel = loadUserByUserNo(user.getGuardPhone(), password);
+            if(guardianModel != null) {
+                guardianModel.setGuadrPwd(newPassword);
+                guardDao.updGuardPwd(guardianModel);
+            }
+            return guardianModel;
+        } catch(Exception e) {
+            return null;
+        }
     }
 
     @Override
@@ -72,4 +87,12 @@ public class GuardServiceImpl implements GuardService{
         }
         return guardInfo;
     }
+
+    @Override
+    public List<GuardianModel> selGuardianList(long masterGuardNo) {
+
+        return guardDao.selGuardianList(masterGuardNo);
+    }
+
+
 }
