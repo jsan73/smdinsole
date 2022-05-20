@@ -7,7 +7,7 @@ import java.util.List;
 public interface GuardService {
 
     public String getToken(String phoneNumber, String pwd);
-    public GuardianModel changePassword(String password, String newPassword);
-    public GuardianModel insGuardInfo(GuardianModel guardInfo, long shoesNo)  throws Exception;
-    public List<GuardianModel> selGuardianList(long masterGuardNo);
+    public int changePassword(String password, String newPassword);
+    public int insGuardInfo(GuardianModel guardInfo, long shoesNo)  throws Exception;
+    public List<GuardianModel> selGuardianList();
 }

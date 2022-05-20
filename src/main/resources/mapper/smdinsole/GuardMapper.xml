@@ -6,7 +6,7 @@
         SELECT
             GUARD_NO
              , GUARD_NAME
-             , GUARD_PHONE
+             , FNC_DEC(GUARD_PHONE) AS guardPhone
              , MASTER_GUARD_NO
              , GUARD_PWD
              , MAKETING_AGREE_YN
@@ -14,10 +14,8 @@
         FROM
             ST_GUARDIAN
         WHERE
-            GUARD_PHONE = #{guardPhone}
-            <if test="guardPwd != null and guardPwd != ''" >
-                AND GUARD_PWD = FNC_PW(#{guardPwd}, #{guardPhone})
-            </if>
+            GUARD_PHONE = FNC_ENC(#{guardPhone})
+            AND GUARD_PWD = FNC_PW(#{guardPwd}, #{guardPhone})
     </select>
 
     <update id="updGuardPwd" parameterType="com.smd21.smdinsole.guard.model.GuardianModel">
@@ -28,15 +26,14 @@
         SELECT
             GUARD_NO
              , GUARD_NAME
-             , fnc_dec(GUARD_PHONE)
+             , fnc_dec(GUARD_PHONE) AS guardPhone
              , MASTER_GUARD_NO
-             , GUARD_PWD
              , MAKETING_AGREE_YN
              , REG_DATE
         FROM
             ST_GUARDIAN
         WHERE
-            MASTER_GUARD_NO = #{masterGuardNo}
+            MASTER_GUARD_NO = #{masterGuardNo} OR GUARD_NO = #{masterGuardNo}
         ORDER BY GUARD_NO
     </select>
 

@@ -2,7 +2,7 @@ package com.smd21.smdinsole.app.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smd21.smdinsole.app.security.provider.JwtTokenProvider;
-import com.smd21.smdinsole.common.ObjectDataUtil;
+import com.smd21.smdinsole.common.CommonUtil;
 import com.smd21.smdinsole.common.model.RestOutModel;
 import io.jsonwebtoken.*;
 import org.springframework.security.core.Authentication;
@@ -43,11 +43,17 @@ public class JwtAuthFilter extends GenericFilterBean {
 				SecurityContextHolder.getContext().setAuthentication(auth);
 			}
 			try {
-				if (ObjectDataUtil.notEmpty(claims)
-						&& ObjectDataUtil.notEmpty(claims.getBody())
-						&& claims.getBody().containsKey("guardNo")) {
-					request.setAttribute("guardNo", claims.getBody().get("guardNo"));
+				if (CommonUtil.notEmpty(claims) && CommonUtil.notEmpty(claims.getBody())) {
+					if(claims.getBody().containsKey("guardNo"))
+						request.setAttribute("guardNo", claims.getBody().get("guardNo"));
+					else if(claims.getBody().containsKey("loginId"))
+						request.setAttribute("loginId", claims.getBody().get("loginId"));
 				}
+//				if (ObjectDataUtil.notEmpty(claims)
+//						&& ObjectDataUtil.notEmpty(claims.getBody())
+//						&& claims.getBody().containsKey("guardNo")) {
+//					request.setAttribute("guardNo", claims.getBody().get("guardNo"));
+//				}
 			}catch(Exception e2) {
 				e2.printStackTrace();
 			}

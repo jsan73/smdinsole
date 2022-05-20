@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smd21.smdinsole.shoes.dao.ShoesDao">
+
+    <select id="selShoesInfoListByGuard" parameterType="Long" resultType="com.smd21.smdinsole.shoes.model.ShoesInfoModel">
+        SELECT
+            SI.SHOES_NO
+            , SI.SHOES_NUMBER
+            , SI.IS_ASSIGN
+            , SI.BATTERY
+            , SI.REG_DATE
+            , SI.UPD_DATE
+        FROM ST_SHOES_INFO SI
+            LEFT JOIN ST_SHOES_GUARD SG ON SI.SHOES_NO = SG.SHOES_NO
+            LEFT JOIN ST_GUARDIAN G ON SG.MASTER_GUARD_NO = G.GUARD_NO
+        WHERE
+            SI.IS_ASSIGN = 'Y'
+            AND G.GUARD_NO = #{guardNo}
+        ORDER BY SI.SHOES_NO
+    </select>
+
+    <update id="updShoesBattery" parameterType="Map">
+        UPDATE ST_SHOES_INFO
+        SET
+            BATTERY = #{battery}
+            , UPD_DATE = DATE_FORMAT(NOW(), '%Y%m%d%H%i%S')
+        WHERE
+            SHOES_NO = #{shoesNo}
+    </update>
+
+    <select id="getShoesInfo" parameterType="String" resultType="com.smd21.smdinsole.shoes.model.ShoesInfoModel">
+        SELECT
+            SI.SHOES_NO
+            , SI.SHOES_NUMBER
+            , SI.IS_ASSIGN
+            , SI.BATTERY
+            , SG.MASTER_GUARD_NO AS guardNo
+        FROM
+            ST_SHOES_INFO SI LEFT JOIN ST_SHOES_GUARD SG ON SI.SHOES_NO = SG.SHOES_NO
+        WHERE SI.SHOES_NUMBER = #{shoesNumber}
+    </select>
+
+    <insert id="insActiveRange" parameterType="com.smd21.smdinsole.shoes.model.ActiveRangeModel" useGeneratedKeys="true" keyProperty="rangeNo">
+        INSERT INTO ST_ACTIVE_RANGE (
+            RANGE_NAME
+            , SHOES_NO
+            , RANGE_ADDRESS
+            , LATITUDE
+            , LONGITUDE
+            , RADIUS
+            , REG_DATE
+            , UPD_DATE
+            , REG_USER
+        )
+            ( SELECT
+                #{rangeName}
+                , SI.SHOES_NO
+                , #{rangeAddress}
+                , #{latitude}
+                , #{longitude}
+                , #{radius}
+                , DATE_FORMAT(NOW(), '%Y%m%d%H%i%S')
+                , DATE_FORMAT(NOW(), '%Y%m%d%H%i%S')
+                , #{regUser}
+              FROM ST_SHOES_INFO SI LEFT JOIN ST_SHOES_GUARD SSG on SI.SHOES_NO = SSG.SHOES_NO
+              WHERE SSG.SHOES_NO = #{shoesNo} AND SSG.MASTER_GUARD_NO = #{guardNo}
+            )
+    </insert>
+
+    <delete id="delActiveRange" parameterType="Map">
+        DELETE AR FROM ST_ACTIVE_RANGE AR
+            LEFT JOIN ST_SHOES_INFO SI ON AR.SHOES_NO = SI.SHOES_NO
+            LEFT JOIN ST_SHOES_GUARD SG ON SI.SHOES_NO = SG.SHOES_NO
+        WHERE
+            RANGE_NO = #{rangeNo}
+            AND SG.MASTER_GUARD_NO = #{guardNo}
+    </delete>
+
+    <select id="selActiveRangeList" parameterType="Map" resultType="com.smd21.smdinsole.shoes.model.ActiveRangeModel">
+        SELECT
+            RANGE_NO
+            , RANGE_NAME
+            , AR.SHOES_NO
+            , SG.MASTER_GUARD_NO AS guardNo
+            , RANGE_ADDRESS
+            , LATITUDE
+            , LONGITUDE
+            , RADIUS
+            , REG_DATE
+            , UPD_DATE
+            , REG_USER
+        FROM ST_ACTIVE_RANGE AR
+            LEFT JOIN ST_SHOES_GUARD SG ON AR.SHOES_NO = SG.SHOES_NO
+        WHERE
+            SG.MASTER_GUARD_NO = #{guardNo}
+            AND SG.SHOES_NO = #{shoesNo}
+        ORDER BY AR.RANGE_NO
+    </select>
+
+    <insert id="insLocation" parameterType="com.smd21.smdinsole.shoes.model.LocationModel" useGeneratedKeys="true" keyProperty="locationNo">
+        INSERT INTO ST_LOCATION (
+            SHOES_NO
+            , LATITUDE
+            , LONGITUDE
+            , STATUS
+            , REPORT_DATE
+        ) VALUES(
+            #{shoesNo}
+            , #{latitude}
+            , #{longitude}
+            , #{status}
+            , DATE_FORMAT(NOW(), '%Y%m%d%H%i%S')
+        )
+    </insert>
+
+    <select id="selLocationList" parameterType="Map" resultType="com.smd21.smdinsole.shoes.model.LocationModel">
+        SELECT
+            LOCATION_NO
+            , SHOES_NO
+            , LATITUDE
+            , LONGITUDE
+            , STATUS
+            , REPORT_DATE
+        FROM ST_ACTIVE_RANGE AR
+                 LEFT JOIN ST_SHOES_GUARD SG ON AR.SHOES_NO = SG.SHOES_NO
+        WHERE
+            SG.MASTER_GUARD_NO = #{guardNo}
+            AND SG.SHOES_NO = #{shoseNo}
+            AND AR.REPORT_DATE >= #{startDt} AND REPORT_DATE <![CDATA[ <= ]]> #{endDt}
+        ORDER BY AR.LOCATION_NO
+    </select>
+
+    <insert id="mergeDanger" parameterType="com.smd21.smdinsole.shoes.model.DangerModel">
+        INSERT INTO ST_DANGER (
+              SHOES_NO
+            , LOC_NO
+            , LAT
+            , LON
+            , DANGER_YN
+            , REG_DATE
+            , UPD_DATE
+        ) VALUES(
+            #{shoesNo}
+            , #{locNo}
+            , #{lat}
+            , #{lon}
+            , #{dangerYn}
+            , DATE_FORMAT(NOW(), '%Y%m%d%H%i%S')
+            , DATE_FORMAT(NOW(), '%Y%m%d%H%i%S')
+        ) ON DUPLICATE KEY UPDATE
+            LOC_NO = #{locNo}
+            , LAT = #{lat}
+            , LON = #{lon}
+            , DANGER_YN = #{dangerYn}
+            , UPD_DATE = DATE_FORMAT(NOW(), '%Y%m%d%H%i%S')
+    </insert>
+
+    <select id="getDanger" parameterType="Map" resultType="com.smd21.smdinsole.shoes.model.DangerModel">
+        SELECT
+            SHOES_NO
+             , LOC_NO
+             , LAT
+             , LON
+             , DANGER_YN
+             , REG_DT
+             , UPD_DT
+        FROM ST_DANGER D LEFT JOIN ST_SHOES_GUARD SG ON D.SHOES_NO = SG.SHOES_NO
+        WHERE
+            D.SHOES_NO = #{shoesNo}
+            AND SG.MASTER_GUARD_NO = #{guardNo}
+    </select>
+</mapper>

@@ -51,27 +51,29 @@ public class SecurityConfig {
                     .antMatchers(HttpMethod.OPTIONS, "/*/api/**")
                     .antMatchers("/static/**")
                     .antMatchers("/error")
-                    .antMatchers("/*/api/token/getkey")
                     .antMatchers("/*/api/guard/get/token")
+                    .antMatchers("/*/api/admin/get/token")
+                    .antMatchers("/*/api/shoes/loc/ins")
                     .antMatchers("/*/api/check/alive");
         }
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http
-                    .csrf().disable()
-                    .cors().and()
-                    .antMatcher("/*/api/**")
+                .csrf().disable()
+                .cors().and()
+                .antMatcher("/*/api/**")
 
-                    .addFilterBefore(new JwtAuthFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
-                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                    .authorizeRequests()
-                    .antMatchers("/*/api/**").access("hasAnyRole('ROLE_ACCESS')")
-                    .anyRequest().authenticated()
-                    .and()
-                    .exceptionHandling()
-                    .authenticationEntryPoint(restAuthenticationEntryPoint);		// 인증오류
-//					.accessDeniedHandler(accessDeniedHandler);					// 접근 제한
+                .addFilterBefore(new JwtAuthFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .authorizeRequests()
+                .antMatchers("/*/api/guard/**", "/*/api/shoes/**").access("hasAnyRole('ROLE_ACCESS')")
+                .antMatchers("/*/api/admin/**").access("hasAnyRole('ROLE_ADMIN')")
+                .anyRequest().authenticated()
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(restAuthenticationEntryPoint);		// 인증오류
+    //					.accessDeniedHandler(accessDeniedHandler);					// 접근 제한
         }
     }
 

@@ -1,9 +1,9 @@
 package com.smd21.smdinsole.guard.controller;
 
 import com.smd21.smdinsole.common.model.TokenUserModel;
+import com.smd21.smdinsole.guard.model.GuardLoginModel;
 import com.smd21.smdinsole.guard.model.GuardianModel;
 import com.smd21.smdinsole.guard.service.GuardService;
-import com.smd21.smdinsole.shoes.service.ShoesService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -29,14 +29,14 @@ public class GuardRestController {
 
     @ApiOperation(value = "로그인", notes="rows, page")
     @RequestMapping(value = "/get/token", method = RequestMethod.POST)
-    public String getToken(@RequestBody GuardianModel guard) throws Exception {
+    public String getToken(@RequestBody GuardLoginModel guard) throws Exception {
 
-        return guardService.getToken(guard.getGuardPhone(), guard.getGuadrPwd());
+        return guardService.getToken(guard.getGuardPhone(), guard.getGuardPwd());
     }
 
     @ApiOperation(value = "비밀번호 변경")
     @RequestMapping(value = "/upd/pwd", method = RequestMethod.POST)
-    public GuardianModel updGuardPwd(@RequestBody String guardPwd, @RequestBody String newGuardPwd) throws Exception {
+    public int updGuardPwd(@RequestParam String guardPwd, @RequestParam String newGuardPwd) throws Exception {
         return guardService.changePassword(guardPwd, newGuardPwd);
     }
 
@@ -44,24 +44,15 @@ public class GuardRestController {
     @RequestMapping(value = "/ins/{shoesNo}", method = RequestMethod.POST)
     public GuardianModel insGuardInfo(@RequestBody GuardianModel guardInfo, @PathVariable long shoesNo) throws Exception {
 
-        guardInfo = guardService.insGuardInfo(guardInfo, shoesNo);
+        int retVal = guardService.insGuardInfo(guardInfo, shoesNo);
+        if(retVal == 0) return null;
+
         return guardInfo;
     }
 
     @ApiOperation(value = "보호자 리스트")
     @RequestMapping(value = "/sel", method = RequestMethod.POST)
     public List<GuardianModel> selGuardList(@ApiIgnore HttpServletRequest request) throws Exception {
-        try {
-            TokenUserModel user = (TokenUserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-            long masterGuardNo = user.getMasterGuardNo();
-
-            if(masterGuardNo == 0) masterGuardNo = user.getGuardNo();
-            List<GuardianModel> guardList = guardService.selGuardianList(masterGuardNo);
-
-            return guardList;
-        } catch(Exception e) {
-            return null;
-        }
+        return guardService.selGuardianList();
     }
 }

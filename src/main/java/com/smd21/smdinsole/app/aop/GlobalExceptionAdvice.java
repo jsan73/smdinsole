@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -95,6 +96,13 @@ public class GlobalExceptionAdvice extends Exception {
 		return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
+	@SuppressWarnings("rawtypes")
+	@ExceptionHandler(UsernameNotFoundException.class)
+	protected ResponseEntity<RestOutModel> handleUsernameNotFoundException(Exception e) {
+		final RestOutModel response = new RestOutModel(HttpStatus.UNAUTHORIZED.value(), ERR, e.getMessage(), null);
+		logger.debug(response.toString());
+		return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+	}
 
 
 

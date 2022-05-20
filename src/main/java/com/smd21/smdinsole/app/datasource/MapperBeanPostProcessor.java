@@ -2,7 +2,7 @@ package com.smd21.smdinsole.app.datasource;
 
 import com.smd21.smdinsole.app.datasource.annotation.MapperBeanNameGenerator;
 import com.smd21.smdinsole.app.datasource.properties.DataSourceListProperties;
-import com.smd21.smdinsole.common.ObjectDataUtil;
+import com.smd21.smdinsole.common.CommonUtil;
 import com.zaxxer.hikari.HikariDataSource;
 
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -120,7 +120,7 @@ public class MapperBeanPostProcessor implements BeanDefinitionRegistryPostProces
 	) {
 
 		String baseMapper = config.getBaseMapper();
-		baseMapper = ObjectDataUtil.empty(baseMapper) ? MAPPER_LOCALTION : baseMapper;
+		baseMapper = CommonUtil.empty(baseMapper) ? MAPPER_LOCALTION : baseMapper;
 
 		AbstractBeanDefinition sqlSessionFactory = BeanDefinitionBuilder
 				.genericBeanDefinition(SqlSessionFactoryBean.class)
