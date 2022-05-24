@@ -75,6 +75,17 @@ public class ShoesRestController {
 
         loc.setShoesNumber(shoesId);
         String[] params = location.split(",");
+        if(params != null && params.length == 5) {
+            if("NTY".equals(params[0])) {
+
+                loc.setLatitude(Double.parseDouble(params[1]));
+                loc.setLongitude(Double.parseDouble(params[2]));
+                int typeInfo = Integer.parseInt(params[3]);
+                loc.setStatus(typeInfo);
+
+
+            }
+        }
 
         ShoesInfoModel shoesInfoModel = shoesService.insLocation(loc);
         if(shoesInfoModel == null) throw new Exception();
