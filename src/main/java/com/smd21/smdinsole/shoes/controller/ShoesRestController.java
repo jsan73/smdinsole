@@ -67,4 +67,20 @@ public class ShoesRestController {
 
         return 1;
     }
+
+    @ApiOperation(value = "위치 정보 수신")
+    @RequestMapping(value = "/loc/ins/{shoesId}", method = RequestMethod.POST)
+    public int insLocation(@PathVariable String shoesId, @RequestParam String location) throws Exception {
+        LocationModel loc = new LocationModel();
+
+        loc.setShoesNumber(shoesId);
+        String[] params = location.split(",");
+
+        ShoesInfoModel shoesInfoModel = shoesService.insLocation(loc);
+        if(shoesInfoModel == null) throw new Exception();
+
+        shoesService.watchDanger(loc, shoesInfoModel);
+
+        return 1;
+    }
 }
