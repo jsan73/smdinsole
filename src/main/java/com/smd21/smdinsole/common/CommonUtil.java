@@ -1,8 +1,7 @@
 package com.smd21.smdinsole.common;
 
 
-import com.smd21.smdinsole.common.model.TokenUserModel;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.*;
 import java.math.BigDecimal;
@@ -135,4 +134,11 @@ public class CommonUtil {
 		return (rad * 180 / Math.PI);
 	}
 
+	public static String[] getBinary(int num) {
+		String bitStr = StringUtils.leftPad(Integer.toBinaryString(num), 8, "0");
+		StringBuffer sb = new StringBuffer(bitStr);
+		bitStr = sb.reverse().toString();
+
+		return bitStr.split("");
+	}
 }

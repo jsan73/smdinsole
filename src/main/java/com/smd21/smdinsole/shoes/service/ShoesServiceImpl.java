@@ -94,7 +94,10 @@ public class ShoesServiceImpl implements ShoesService {
         shoesMap.put("guardNo", guardNo);
 
         // 배터리 정보 UPDATE
-        shoesMap.put("battery", (long)loc.getStatus());
+        String[] cb = CommonUtil.getBinary(loc.getStatus());
+        int battery = Integer.parseInt(cb[0].concat(cb[3]), 2) ;
+
+        shoesMap.put("battery", (long)battery);
         shoesDao.updShoesBattery(shoesMap);
 
         // 활동 반경 리스트 조회
@@ -128,7 +131,7 @@ public class ShoesServiceImpl implements ShoesService {
             shoesDao.mergeDanger(danger);
             if("Y".equals(danger.getDangerYn())) {
                 // 활동 반경 내에 위치 하지 않았을 경우 알림 발송 (알림 제외 처리 되지 않은 경우)
-                // 5분후 현재 위치 전송 요청 문자 발송
+                // 위치 전송주기 변경 요청 문자 발송
                 noticeService.checkDanger(shoesInfoModel);
             }
 

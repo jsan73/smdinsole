@@ -57,40 +57,28 @@ public class ShoesRestController {
         return shoesService.selActiveRangeList(shoesNo);
     }
 
-    @ApiOperation(value = "위치 정보 입력")
-    @RequestMapping(value = "/loc/ins", method = RequestMethod.POST)
-    public int insLocation(@RequestBody LocationModel loc) throws Exception {
-        ShoesInfoModel shoesInfoModel = shoesService.insLocation(loc);
-        if(shoesInfoModel == null) throw new Exception();
-
-        shoesService.watchDanger(loc, shoesInfoModel);
-
-        return 1;
-    }
 
     @ApiOperation(value = "위치 정보 수신")
-    @RequestMapping(value = "/loc/ins/{shoesId}", method = RequestMethod.POST)
-    public int insLocation(@PathVariable String shoesId, @RequestParam String location) throws Exception {
+    @RequestMapping(value = "/loc/ins", method = RequestMethod.POST)
+    public int insLocation(@RequestParam String shoesId, @RequestParam String location) throws Exception {
         LocationModel loc = new LocationModel();
 
         loc.setShoesNumber(shoesId);
         String[] params = location.split(",");
         if(params != null && params.length == 5) {
             if("NTY".equals(params[0])) {
-
                 loc.setLatitude(Double.parseDouble(params[1]));
                 loc.setLongitude(Double.parseDouble(params[2]));
                 int typeInfo = Integer.parseInt(params[3]);
                 loc.setStatus(typeInfo);
+                loc.setReportDate(params[4]);
 
+                ShoesInfoModel shoesInfoModel = shoesService.insLocation(loc);
+                if(shoesInfoModel == null) throw new Exception();
 
+                shoesService.watchDanger(loc, shoesInfoModel);
             }
         }
-
-        ShoesInfoModel shoesInfoModel = shoesService.insLocation(loc);
-        if(shoesInfoModel == null) throw new Exception();
-
-        shoesService.watchDanger(loc, shoesInfoModel);
 
         return 1;
     }

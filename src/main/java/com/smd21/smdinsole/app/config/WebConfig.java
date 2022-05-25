@@ -16,10 +16,7 @@ import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.BeanNameViewResolver;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
@@ -88,6 +85,17 @@ public class WebConfig extends WebMvcConfigurationSupport {
 //	    resolvers.add(excelViewResolver());
 	    resolver.setViewResolvers(resolvers);
 	    return resolver;
+	}
+
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/**")
+				.allowedOrigins("*")
+				//		 .allowedOrigins("https://m-dev.kkokasin.com:8080")
+				.allowedMethods("GET", "POST", "HEAD")
+				.allowCredentials(true)
+				.maxAge(3600);
+
 	}
 
     @Bean

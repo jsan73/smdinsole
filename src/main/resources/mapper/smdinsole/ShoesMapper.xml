@@ -104,11 +104,13 @@
             , LONGITUDE
             , STATUS
             , REPORT_DATE
+            , REG_DATE
         ) VALUES(
             #{shoesNo}
             , #{latitude}
             , #{longitude}
             , #{status}
+            , #{reportDate}
             , DATE_FORMAT(NOW(), '%Y%m%d%H%i%S')
         )
     </insert>
@@ -121,6 +123,7 @@
             , LONGITUDE
             , STATUS
             , REPORT_DATE
+            , REG_DATE
         FROM ST_ACTIVE_RANGE AR
                  LEFT JOIN ST_SHOES_GUARD SG ON AR.SHOES_NO = SG.SHOES_NO
         WHERE

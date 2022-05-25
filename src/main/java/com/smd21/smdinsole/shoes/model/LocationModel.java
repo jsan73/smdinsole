@@ -25,6 +25,6 @@ public class LocationModel {
     @ApiModelProperty(value = "배터리 정보", example = "80", required = true)
     private int status;
 
-    @ApiModelProperty(value = "수신일자", hidden = true, required = false)
+    @ApiModelProperty(value = "수신일자", required = true)
     private String reportDate;
 }
