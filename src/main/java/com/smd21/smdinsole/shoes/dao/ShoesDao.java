@@ -1,16 +1,14 @@
 package com.smd21.smdinsole.shoes.dao;
 
 import com.smd21.smdinsole.guard.model.GuardianModel;
-import com.smd21.smdinsole.shoes.model.ActiveRangeModel;
-import com.smd21.smdinsole.shoes.model.DangerModel;
-import com.smd21.smdinsole.shoes.model.LocationModel;
-import com.smd21.smdinsole.shoes.model.ShoesInfoModel;
+import com.smd21.smdinsole.shoes.model.*;
 
 import java.util.List;
 import java.util.Map;
 
 public interface ShoesDao {
     public List<ShoesInfoModel> selShoesInfoListByGuard(long guardNo);
+    public List<DashboardModel> selShoesInfoList(long guardNo);
     public int updShoesBattery(Map<String, Long> shoseMap);
     public ShoesInfoModel getShoesInfo(String shoesNumber);
     public int insActiveRange(ActiveRangeModel range);

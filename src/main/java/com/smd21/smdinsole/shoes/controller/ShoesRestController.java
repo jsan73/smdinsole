@@ -3,6 +3,7 @@ package com.smd21.smdinsole.shoes.controller;
 import com.smd21.smdinsole.common.model.TokenUserModel;
 import com.smd21.smdinsole.guard.model.GuardianModel;
 import com.smd21.smdinsole.shoes.model.ActiveRangeModel;
+import com.smd21.smdinsole.shoes.model.DashboardModel;
 import com.smd21.smdinsole.shoes.model.LocationModel;
 import com.smd21.smdinsole.shoes.model.ShoesInfoModel;
 import com.smd21.smdinsole.shoes.service.ShoesService;
@@ -32,6 +33,14 @@ public class ShoesRestController {
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     public List<ShoesInfoModel> selShoesInfoListByGuard(@ApiIgnore HttpServletRequest request) throws Exception {
         List<ShoesInfoModel> shoesList = shoesService.selShoesInfoListByGuard();
+
+        return shoesList;
+    }
+
+    @ApiOperation(value = "단말 List 조회 (Dashboard)")
+    @RequestMapping(value = "/dashboard/list", method = RequestMethod.POST)
+    public List<DashboardModel> selShoesInfoList(@ApiIgnore HttpServletRequest request) throws Exception {
+        List<DashboardModel> shoesList = shoesService.selShoesInfoList();
 
         return shoesList;
     }

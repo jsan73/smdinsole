@@ -4,10 +4,7 @@ import com.smd21.smdinsole.common.CommonUtil;
 import com.smd21.smdinsole.common.RootService;
 import com.smd21.smdinsole.common.model.TokenUserModel;
 import com.smd21.smdinsole.shoes.dao.ShoesDao;
-import com.smd21.smdinsole.shoes.model.ActiveRangeModel;
-import com.smd21.smdinsole.shoes.model.DangerModel;
-import com.smd21.smdinsole.shoes.model.LocationModel;
-import com.smd21.smdinsole.shoes.model.ShoesInfoModel;
+import com.smd21.smdinsole.shoes.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +35,12 @@ public class ShoesServiceImpl implements ShoesService {
 
         long masterGuardNo = rootService.getMasterGusrdNo();
         return shoesDao.selShoesInfoListByGuard(masterGuardNo);
+    }
+
+    @Override
+    public List<DashboardModel> selShoesInfoList() {
+        long masterGuardNo = rootService.getMasterGusrdNo();
+        return shoesDao.selShoesInfoList(masterGuardNo);
     }
 
     @Override

@@ -19,6 +19,31 @@
         ORDER BY SI.SHOES_NO
     </select>
 
+    <select id="selShoesInfoList" parameterType="Long" resultType="com.smd21.smdinsole.shoes.model.DashboardModel">
+        SELECT
+            SI.SHOES_NO
+             , SI.SHOES_NUMBER
+             , SI.IS_ASSIGN
+             , SI.BATTERY
+             , SI.REG_DATE
+             , SI.UPD_DATE
+             , SL.LATITUDE AS lat
+             , SL.LONGITUDE AS lon
+             , SAR.RANGE_NAME
+             , SAR.RANGE_ADDRESS
+             , SAR.LATITUDE AS activeLat
+             , SAR.LONGITUDE AS activeLon
+             , SAR.RADIUS
+        FROM ST_SHOES_INFO SI LEFT JOIN
+                 (SELECT * FROM  ST_LOCATION ORDER BY LOCATION_NO DESC LIMIT 1) AS SL ON SL.SHOES_NO = SI.SHOES_NO
+                              LEFT JOIN (SELECT * FROM  ST_ACTIVE_RANGE ORDER BY RANGE_NO LIMIT 1) AS SAR ON SAR.SHOES_NO = SI.SHOES_NO
+                              LEFT JOIN ST_SHOES_GUARD SG ON SI.SHOES_NO = SG.SHOES_NO
+        WHERE
+            SI.IS_ASSIGN = 'Y'
+          AND SG.MASTER_GUARD_NO = #{guardNo}
+        ORDER BY SI.SHOES_NO
+    </select>
+
     <update id="updShoesBattery" parameterType="Map">
         UPDATE ST_SHOES_INFO
         SET
