@@ -10,6 +10,7 @@ public interface ShoesDao {
     public List<ShoesInfoModel> selShoesInfoListByGuard(long guardNo);
     public List<DashboardModel> selShoesInfoList(long guardNo);
     public int updShoesBattery(Map<String, Long> shoseMap);
+    public int updShoesNickName(Map<String, Object> shoseMap);
     public ShoesInfoModel getShoesInfo(String shoesNumber);
     public int insActiveRange(ActiveRangeModel range);
     public int delActiveRange(Map<String, Long> rangeMap);

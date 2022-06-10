@@ -43,6 +43,16 @@ public class ShoesServiceImpl implements ShoesService {
         return shoesDao.selShoesInfoList(masterGuardNo);
     }
 
+
+    @Override
+    public int updShoesNickName(ShoesInfoModel shoes) {
+        Map<String, Object> shoesMap = new HashMap<>();
+        shoesMap.put("shoesNo", shoes.getShoesNo());
+        shoesMap.put("nickName", shoes.getNickName());
+
+        return shoesDao.updShoesNickName(shoesMap);
+    }
+
     @Override
     public int insActiveRange(ActiveRangeModel range) {
         range.setGuardNo(rootService.getMasterGusrdNo());

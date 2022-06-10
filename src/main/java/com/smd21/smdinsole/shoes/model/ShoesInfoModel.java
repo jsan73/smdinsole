@@ -11,8 +11,14 @@ public class ShoesInfoModel extends BaseVO {
     @ApiModelProperty(value = "Sequence", hidden = true)
     private long shoesNo;
 
+    @ApiModelProperty(value = "단말 ID", example = "A0001", required = true)
+    private String shoesId;
+
     @ApiModelProperty(value = "단말 번호", example = "0170023456", required = true)
     private String shoesNumber;
+
+    @ApiModelProperty(value = "단말 별칭", example = "꼬까신", required = true)
+    private String nickName;
 
     @ApiModelProperty(value = "보호자 할당 유무", example = "Y", required = true)
     private char isAssign;

@@ -16,14 +16,14 @@ logging:
   file:
     path: C:\home\smdinsole\logs\logback\
 datasources:
-  - name: insole
+  - name: kkokasin
     base-package: com.smd21.smdinsole.**.dao
     aop-execution: com.smd21.smdinsole..service.*.*(..)
     data-source:
       driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      jdbcUrl: jdbc:log4jdbc:mysql://105.0.154.57:3306/smdinsole?characterEncoding=UTF-8&serverTimezone=UTC&noAccessToProcedureBodies=true&allowPublicKeyRetrieval=true&useSSL=false&allowMultiQueries=true&autoReconnect=true
-      username: insole
-      password: insole
+      jdbcUrl: jdbc:log4jdbc:mysql://kkokasin-dev-db.cmcdolkwxf6m.ap-northeast-2.rds.amazonaws.com:3306/kkokasin?characterEncoding=UTF-8&serverTimezone=UTC&noAccessToProcedureBodies=true&allowPublicKeyRetrieval=true&useSSL=false&allowMultiQueries=true&autoReconnect=true
+      username: kkokasin
+      password: kkokasin21!
       maximumPoolSize: 5
 
 ---
@@ -35,14 +35,14 @@ logging:
   file:
     path: C:\home\smdinsole\logs\logback\
 datasources:
-  - name: insole
+  - name: kkokasin
     base-package: com.smd21.smdinsole.**.dao
     aop-execution: com.smd21.smdinsole..service.*.*(..)
     data-source:
       driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      jdbcUrl: jdbc:log4jdbc:mysql://105.0.154.57:3306/smdinsole?characterEncoding=UTF-8&serverTimezone=UTC&noAccessToProcedureBodies=true&allowPublicKeyRetrieval=true&useSSL=false&allowMultiQueries=true&autoReconnect=true
-      username: insole
-      password: insole
+      jdbcUrl: jdbc:log4jdbc:mysql://kkokasin-dev-db.cmcdolkwxf6m.ap-northeast-2.rds.amazonaws.com:3306/kkokasin?characterEncoding=UTF-8&serverTimezone=UTC&noAccessToProcedureBodies=true&allowPublicKeyRetrieval=true&useSSL=false&allowMultiQueries=true&autoReconnect=true
+      username: kkokasin
+      password: kkokasin21!
       maximumPoolSize: 5
 
 ---
@@ -54,12 +54,12 @@ logging:
   file:
     path: C:\home\smdinsole\logs\logback\
 datasources:
-  - name: insole
+  - name: kkokasin
     base-package: com.smd21.smdinsole.**.dao
     aop-execution: com.smd21.smdinsole..service.*.*(..)
     data-source:
       driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      jdbcUrl: jdbc:log4jdbc:mysql://105.0.154.57:3306/smdinsole?characterEncoding=UTF-8&serverTimezone=UTC&noAccessToProcedureBodies=true&allowPublicKeyRetrieval=true&useSSL=false&allowMultiQueries=true&autoReconnect=true
-      username: insole
-      password: insole
+      jdbcUrl: jdbc:log4jdbc:mysql://kkokasin-dev-db.cmcdolkwxf6m.ap-northeast-2.rds.amazonaws.com:3306/kkokasin?characterEncoding=UTF-8&serverTimezone=UTC&noAccessToProcedureBodies=true&allowPublicKeyRetrieval=true&useSSL=false&allowMultiQueries=true&autoReconnect=true
+      username: kkokasin
+      password: kkokasin21!
       maximumPoolSize: 5

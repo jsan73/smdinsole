@@ -45,6 +45,13 @@ public class ShoesRestController {
         return shoesList;
     }
 
+    @ApiOperation(value = "단말 닉네임 변경")
+    @RequestMapping(value = "/nickname/upd", method = RequestMethod.POST)
+    public int insActiveRange(@RequestBody ShoesInfoModel shoes) throws Exception {
+        int insResult = shoesService.updShoesNickName(shoes);
+        return insResult;
+    }
+
     @ApiOperation(value = "활동 반경 추가")
     @RequestMapping(value = "/active/ins", method = RequestMethod.POST)
     public ActiveRangeModel insActiveRange(@RequestBody ActiveRangeModel activeRange) throws Exception {

@@ -12,6 +12,7 @@ import java.util.Map;
 public interface ShoesService {
     public List<ShoesInfoModel> selShoesInfoListByGuard();
     public List<DashboardModel> selShoesInfoList();
+    public int updShoesNickName(ShoesInfoModel shoes);
     public int insActiveRange(ActiveRangeModel range);
     public int delActiveRange(long rangeNo);
     public List<ActiveRangeModel> selActiveRangeList(long shoesNo);

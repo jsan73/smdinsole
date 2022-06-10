@@ -19,7 +19,8 @@
     </select>
 
     <update id="updGuardPwd" parameterType="com.smd21.smdinsole.guard.model.GuardianModel">
-        UPDATE ST_GUARDIAN WET GUARD_PWD = FNC_PW(#{guardPwd}, #{guardPhone})
+        UPDATE ST_GUARDIAN SET GUARD_PWD = FNC_PW(#{guardPwd}, #{guardPhone})
+        WHERE GUARD_NO = #{guardNo}
     </update>
 
     <select id="selGuardianList" parameterType="Long" resultType="com.smd21.smdinsole.guard.model.GuardianModel">

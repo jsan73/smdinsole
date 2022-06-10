@@ -5,6 +5,7 @@
     <select id="selShoesInfoList" parameterType="Long" resultType="com.smd21.smdinsole.shoes.model.ShoesInfoModel">
         SELECT
             SI.SHOES_NO
+             , SI.SHOES_ID
              , SI.SHOES_NUMBER
              , SI.IS_ASSIGN
              , SI.BATTERY
@@ -21,17 +22,19 @@
 
     <insert id="insShoesInfo" parameterType="com.smd21.smdinsole.shoes.model.ShoesInfoModel" useGeneratedKeys="true" keyProperty="shoesNo">
         INSERT INTO ST_SHOES_INFO (
-            SHOES_NUMBER
+            SHOES_ID
+            , SHOES_NUMBER
             , IS_ASSIGN
             , BATTERY
             , REG_DATE
             , UPD_DATE
-        ) VALUES (#{shoesNumber},#{isAssign}, #{battery}, DATE_FORMAT(NOW(), '%Y%m%d%H%i%S'), DATE_FORMAT(NOW(), '%Y%m%d%H%i%S'))
+        ) VALUES (#{shoesId}, #{shoesNumber},#{isAssign}, #{battery}, DATE_FORMAT(NOW(), '%Y%m%d%H%i%S'), DATE_FORMAT(NOW(), '%Y%m%d%H%i%S'))
     </insert>
 
     <update id="updShoesInfo" parameterType="com.smd21.smdinsole.shoes.model.ShoesInfoModel">
         UPDATE ST_SHOES_INFO
         SET
+            <if test="shoesId != null and shoesId != ''" > SHOES_ID = #{shoesId}, </if>
             <if test="shoesNumber != null and shoesNumber != ''" > SHOES_NUMBER = #{shoesNumber}, </if>
             <if test="isAssign != null and isAssign != ''" > IS_ASSIGN = #{isAssign}, </if>
             <if test="battery != null and battery != ''" > BATTERY = #{battery}, </if>
