@@ -38,9 +38,18 @@ public class ShoesServiceImpl implements ShoesService {
     }
 
     @Override
-    public List<DashboardModel> selShoesInfoList() {
+    public List<DashboardModel> selShoesInfoList(long shoesNo) {
         long masterGuardNo = rootService.getMasterGusrdNo();
-        return shoesDao.selShoesInfoList(masterGuardNo);
+        SearchModel search = new SearchModel();
+        search.setGuardNo(masterGuardNo);
+        if(shoesNo != 0) search.setShoesNo(shoesNo);
+        return shoesDao.selShoesInfoList(search);
+    }
+
+    @Override
+    public ShoesInfoModel getShoesInfo(String shoesNumber) {
+        return shoesDao.getShoesInfo(shoesNumber);
+
     }
 
 
@@ -73,6 +82,12 @@ public class ShoesServiceImpl implements ShoesService {
     }
 
     @Override
+    public int updActiveRange(ActiveRangeModel rangeInfo) {
+        rangeInfo.setRegUser(rootService.getGusrdNo());
+        return shoesDao.updActiveRange(rangeInfo);
+    }
+
+    @Override
     public List<ActiveRangeModel> selActiveRangeList(long shoesNo) {
         long masterGuardNo = rootService.getMasterGusrdNo();
 
@@ -83,6 +98,20 @@ public class ShoesServiceImpl implements ShoesService {
         List<ActiveRangeModel> rangeList = shoesDao.selActiveRangeList(shoesMap);
 
         return rangeList;
+    }
+
+    @Override
+    public ActiveRangeModel getActiveRange(long shoesNo, long rangeNo) {
+        long masterGuardNo = rootService.getMasterGusrdNo();
+
+        Map<String, Long> shoesMap = new HashMap<>();
+        shoesMap.put("shoesNo", shoesNo);
+        shoesMap.put("guardNo", masterGuardNo);
+        shoesMap.put("rangeNo", rangeNo);
+
+        ActiveRangeModel range = shoesDao.getActiveRange(shoesMap);
+
+        return range;
     }
 
     @Override
@@ -154,8 +183,37 @@ public class ShoesServiceImpl implements ShoesService {
 
 
     @Override
-    public List<LocationModel> selLocationList(Map<String, Long> report) {
-        return null;
+    public List<LocationModel> selLocationList(SearchModel search) {
+        long masterGuardNo = rootService.getMasterGusrdNo();
+        search.setGuardNo(masterGuardNo);
+
+        return shoesDao.selLocationList(search);
+    }
+
+    @Override
+    @Transactional
+    public int setNotice(NoticeModel notice, int option) {
+        NoticeModel c_notice = shoesDao.getNotice(notice.getShoesNo());
+        if(c_notice != null) {
+            // 기존 알림 해제 설정이 되어 있는 상태 - 사용 안함으로 설정 후 재 설정
+            shoesDao.updNoticeCance(c_notice);
+
+            // 예약 문자 확인 후 취소
+        }
+
+        if(option == 100) {
+            // 알림 설정 디폴트로 전환 문자 발송
+
+        }else{
+            // 알람 해제 설정
+            shoesDao.insNotice(notice);
+
+            // 알림 해제 문자 발송 및 알림 예약 문자 발송
+
+        }
+        noticeService.alram();
+
+        return 1;
     }
 
 }

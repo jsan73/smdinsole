@@ -44,7 +44,7 @@
 
     <insert id="insGuardian" parameterType="com.smd21.smdinsole.guard.model.GuardianModel" useGeneratedKeys="true" keyProperty="guardNo">
         INSERT INTO ST_GUARDIAN (GUARD_NAME, GUARD_PHONE, MASTER_GUARD_NO, MAKETING_AGREE_YN, REG_DATE)
-        VALUES(#{guardName}, fnc_enc(#{guardPhone}), #{masterGuardNo}, #{maketigAgreeYn}, DATE_FORMAT(NOW(), '%Y%m%d%H%i%S'))
+        VALUES(#{guardName}, fnc_enc(#{guardPhone}), #{masterGuardNo}, #{maketingAgreeYn}, DATE_FORMAT(NOW(), '%Y%m%d%H%i%S'))
     </insert>
 
     <update id="updGuardian" parameterType="com.smd21.smdinsole.guard.model.GuardianModel">
@@ -53,7 +53,7 @@
         <if test="guardName != null and guardName != ''" > GUARD_NAME = #{guardName}, </if>
         <if test="guardPhone != null and guardPhone != ''" > GUARD_PHONE = fnc_enc(#{guardPhone}), </if>
         <if test="masterGuardNo != null and masterGuardNo != 0" > MASTER_GUARD_NO = #{masterGuardNo}, </if>
-        <if test="maketigAgreeYn != null and maketigAgreeYn != ''" > MAKETING_AGREE_YN = #{maketigAgreeYn}, </if>
+        <if test="maketigAgreeYn != null and maketigAgreeYn != ''" > MAKETING_AGREE_YN = #{maketingAgreeYn}, </if>
         WHERE
         GUARD_NO = #{guardNo}
     </update>

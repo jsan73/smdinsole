@@ -11,7 +11,7 @@ public class DashboardModel extends ShoesInfoModel {
     private double lat;
 
     @ApiModelProperty(value = "경도", example = "126.9611967", required = true)
-    private double lon;
+    private double lng;
 
     @ApiModelProperty(value = "활동범위 이름", example = "범위 1", required = true)
     private String rangeName;
@@ -20,7 +20,7 @@ public class DashboardModel extends ShoesInfoModel {
     private double activeLat;
 
     @ApiModelProperty(value = "활동 정보 경도", example = "126.9611967", required = true)
-    private double activeLon;
+    private double activeLng;
 
     @ApiModelProperty(value = "활동범위 주소", example = "서울시 서대문구", required = true)
     private String rangeAddress;

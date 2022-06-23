@@ -1,5 +1,6 @@
 package com.smd21.smdinsole.guard.controller;
 
+import com.smd21.smdinsole.common.CommonUtil;
 import com.smd21.smdinsole.common.model.TokenUserModel;
 import com.smd21.smdinsole.guard.model.GuardLoginModel;
 import com.smd21.smdinsole.guard.model.GuardianModel;
@@ -50,9 +51,16 @@ public class GuardRestController {
         return guardInfo;
     }
 
+    @ApiOperation(value = "보호자 삭제")
+    @RequestMapping(value = "/del/{guardNo}", method = RequestMethod.POST)
+    public int insGuardInfo( @PathVariable long guardNo) throws Exception {
+        return guardService.delGuardian(guardNo);
+    }
+
     @ApiOperation(value = "보호자 리스트")
-    @RequestMapping(value = "/sel", method = RequestMethod.POST)
+    @RequestMapping(value = "/list", method = RequestMethod.POST)
     public List<GuardianModel> selGuardList(@ApiIgnore HttpServletRequest request) throws Exception {
+
         return guardService.selGuardianList();
     }
 }

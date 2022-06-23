@@ -2,6 +2,7 @@ package com.smd21.smdinsole.admin.service;
 
 import com.smd21.smdinsole.admin.dao.AdminDao;
 import com.smd21.smdinsole.admin.model.AdminUserModel;
+import com.smd21.smdinsole.admin.model.CodeModel;
 import com.smd21.smdinsole.app.security.provider.JwtTokenProvider;
 import com.smd21.smdinsole.common.model.TokenUserModel;
 import com.smd21.smdinsole.guard.model.GuardianModel;
@@ -53,6 +54,11 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public List<ShoesInfoModel> selShoesInfoListByGuard(long guardNo) {
         return adminDao.selShoesInfoList(guardNo);
+    }
+
+    @Override
+    public List<CodeModel> selCodeList(String grupCd) {
+        return adminDao.selCodeList(grupCd);
     }
 
 }

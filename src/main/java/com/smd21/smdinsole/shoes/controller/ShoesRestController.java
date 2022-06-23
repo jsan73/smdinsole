@@ -1,14 +1,14 @@
 package com.smd21.smdinsole.shoes.controller;
 
+import com.smd21.smdinsole.admin.model.CodeModel;
+import com.smd21.smdinsole.admin.service.AdminService;
 import com.smd21.smdinsole.common.model.TokenUserModel;
 import com.smd21.smdinsole.guard.model.GuardianModel;
-import com.smd21.smdinsole.shoes.model.ActiveRangeModel;
-import com.smd21.smdinsole.shoes.model.DashboardModel;
-import com.smd21.smdinsole.shoes.model.LocationModel;
-import com.smd21.smdinsole.shoes.model.ShoesInfoModel;
+import com.smd21.smdinsole.shoes.model.*;
 import com.smd21.smdinsole.shoes.service.ShoesService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import jdk.nashorn.internal.runtime.regexp.joni.SearchAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,12 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/${project.name}/api/shoes")
 @RestController
@@ -28,6 +33,7 @@ public class ShoesRestController {
     final static Logger logger = LoggerFactory.getLogger(ShoesRestController.class);
 
     final ShoesService shoesService;
+    final AdminService adminService;
 
     @ApiOperation(value = "단말 List 조회")
     @RequestMapping(value = "/list", method = RequestMethod.POST)
@@ -37,12 +43,30 @@ public class ShoesRestController {
         return shoesList;
     }
 
-    @ApiOperation(value = "단말 List 조회 (Dashboard)")
+    @ApiOperation(value = "단말 정보 조회")
+    @RequestMapping(value = "/get/{shoesNumber}", method = RequestMethod.POST)
+    public ShoesInfoModel getShoesInfo(@PathVariable String shoesNumber) throws Exception {
+        ShoesInfoModel shoesInfo = shoesService.getShoesInfo(shoesNumber);
+
+        return shoesInfo;
+    }
+
+    @ApiOperation(value = "단말 조회 List(Dashboard)")
     @RequestMapping(value = "/dashboard/list", method = RequestMethod.POST)
     public List<DashboardModel> selShoesInfoList(@ApiIgnore HttpServletRequest request) throws Exception {
-        List<DashboardModel> shoesList = shoesService.selShoesInfoList();
+        List<DashboardModel> shoesList = shoesService.selShoesInfoList(0);
 
         return shoesList;
+    }
+
+    @ApiOperation(value = "단말 조회 단일 (Dashboard)")
+    @RequestMapping(value = "/dashboard/{shoesNo}", method = RequestMethod.POST)
+    public DashboardModel getDashboardInfo(@PathVariable long shoesNo) throws Exception {
+        List<DashboardModel> shoesList = shoesService.selShoesInfoList(shoesNo);
+
+        DashboardModel retValue = null;
+        if(shoesList.size() > 0) retValue = shoesList.get(0);
+        return retValue;
     }
 
     @ApiOperation(value = "단말 닉네임 변경")
@@ -54,17 +78,21 @@ public class ShoesRestController {
 
     @ApiOperation(value = "활동 반경 추가")
     @RequestMapping(value = "/active/ins", method = RequestMethod.POST)
-    public ActiveRangeModel insActiveRange(@RequestBody ActiveRangeModel activeRange) throws Exception {
+    public int insActiveRange(@RequestBody ActiveRangeModel activeRange) throws Exception {
         int insResult = shoesService.insActiveRange(activeRange);
-        if(insResult == 0) return null;
-
-        return activeRange;
+        return insResult;
     }
 
     @ApiOperation(value = "활동 반경 삭제")
-    @RequestMapping(value = "/active/del", method = RequestMethod.POST)
-    public int insActiveRange(@RequestParam long rangeNo) throws Exception {
+    @RequestMapping(value = "/active/del/{rangeNo}", method = RequestMethod.POST)
+    public int insActiveRange(@PathVariable long rangeNo) throws Exception {
         return shoesService.delActiveRange(rangeNo);
+    }
+
+    @ApiOperation(value = "활동 반경 수정")
+    @RequestMapping(value = "/active/upd", method = RequestMethod.POST)
+    public int updActiveRange(@RequestBody ActiveRangeModel activeRange) throws Exception {
+        return shoesService.updActiveRange(activeRange);
     }
 
     @ApiOperation(value = "활동 반경 리스트")
@@ -73,6 +101,51 @@ public class ShoesRestController {
         return shoesService.selActiveRangeList(shoesNo);
     }
 
+    @ApiOperation(value = "활동 반경 정보")
+    @RequestMapping(value = "/active/{shoesNo}/{rangeNo}", method = RequestMethod.POST)
+    public ActiveRangeModel getActiveRange(@PathVariable long shoesNo, @PathVariable long rangeNo) {
+        return shoesService.getActiveRange(shoesNo, rangeNo);
+    }
+
+
+    @ApiOperation(value = "현재위치 요청")
+    @RequestMapping(value = "/req/{shoesNo}", method = RequestMethod.POST)
+    public int reqCurrentLocation(@PathVariable long shoesNo) {
+        
+        // 기기에 SMS 발송
+        // 현재 위치 수신 시 Push 전송
+        return 1;
+    }
+
+    @ApiOperation(value = "Code List 조회")
+    @RequestMapping(value = "/code/list/{grupCd}", method = RequestMethod.POST)
+    public List<CodeModel> selCodeList(@PathVariable String grupCd) throws Exception {
+
+        return adminService.selCodeList(grupCd);
+    }
+
+    @ApiOperation(value = "알람 해제 및 설정")
+    @RequestMapping(value = "/notice/{option}", method = RequestMethod.POST)
+    public int setNotice(@PathVariable int option, @RequestBody NoticeModel notice) {
+        Calendar cal1 = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+        if(option != 100) {
+            if (option == 0) {
+                // 다음날 오전 9시까지 해제
+                cal1.add(Calendar.DATE, 1); // 일 계산
+            } else if (option == 99) {
+                // 재 설정까지 무기한
+                cal1.add(Calendar.DATE, 1000);
+            } else {
+                cal1.add(Calendar.HOUR, option);
+            }
+
+            Date date = new Date(cal1.getTimeInMillis());
+            String nextNotiTime = dateFormat.format(date);
+            notice.setNextNotiTime(nextNotiTime);
+        }
+        return shoesService.setNotice(notice, option);
+    }
 
     @ApiOperation(value = "위치 정보 수신")
     @RequestMapping(value = "/loc/ins", method = RequestMethod.POST)
@@ -97,5 +170,21 @@ public class ShoesRestController {
         }
 
         return 1;
+    }
+    @ApiOperation(value = "위치기록 정보")
+    @RequestMapping(value = "/history/{shoesNo}", method = RequestMethod.POST)
+    public List<LocationModel> selLocationList(@PathVariable long shoesNo, @RequestParam int days){
+        Calendar cal1 = Calendar.getInstance();
+        cal1.add(Calendar.DATE, days*-1); // 일 계산
+        Date date = new Date(cal1.getTimeInMillis());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+        String sDate = dateFormat.format(date).concat("000000");
+        String eDate = dateFormat.format(date).concat("235959");
+
+        SearchModel search = new SearchModel();
+        search.setShoesNo(shoesNo);
+        search.setStartDt(sDate);
+        search.setEndDt(eDate);
+        return shoesService.selLocationList(search);
     }
 }

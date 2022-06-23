@@ -44,4 +44,16 @@
             SHOES_NO = #{shoesNo}
     </update>
 
+    <select id="selCodeList" parameterType="String" resultType="com.smd21.smdinsole.admin.model.CodeModel">
+        SELECT
+            CODE_CD
+            , CODE_NM
+            , CODE_VALUE
+            , GRUP_CD
+            , CODE_SEQ
+        FROM ST_CODE
+        WHERE GRUP_CD = #{grupCd}
+        ORDER BY CODE_SEQ;
+    </select>
+
 </mapper>

@@ -8,6 +8,7 @@ public interface GuardService {
 
     public String getToken(String phoneNumber, String pwd);
     public int changePassword(String password, String newPassword);
-    public int insGuardInfo(GuardianModel guardInfo, long shoesNo)  throws Exception;
+    public int insGuardInfo(GuardianModel guardInfo, long shoesNo);
+    public int delGuardian(long guardNo);
     public List<GuardianModel> selGuardianList();
 }

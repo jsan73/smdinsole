@@ -64,11 +64,17 @@ public class GuardServiceImpl implements GuardService{
     @Override
     public int changePassword(String password, String newPassword) {
         TokenUserModel user = (TokenUserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Map<String, String> loginInfo = new HashMap<>();
 
-        GuardianModel guardianModel = loadUserByUserNo(user.getGuardPhone(), password);
-        if(guardianModel != null) {
-            guardianModel.setGuardPwd(newPassword);
-            return guardDao.updGuardPwd(guardianModel);
+        loginInfo.put("guardPhone", user.getGuardPhone());
+        loginInfo.put("guardPwd", password);
+
+        GuardianModel guardModel = guardDao.getGuardian(loginInfo);
+
+
+        if(guardModel != null) {
+            guardModel.setGuardPwd(newPassword);
+            return guardDao.updGuardPwd(guardModel);
         }else{
             return -1;  // 보호자 계정 없음
         }
@@ -76,7 +82,7 @@ public class GuardServiceImpl implements GuardService{
 
     @Override
     @Transactional
-    public int insGuardInfo(GuardianModel guardInfo, long shoesNo) throws Exception {
+    public int insGuardInfo(GuardianModel guardInfo, long shoesNo)  {
         int retValue = guardDao.insGuardian(guardInfo);
 
 //        GuardianModel masterGuard = new GuardianModel();
@@ -89,8 +95,15 @@ public class GuardServiceImpl implements GuardService{
             info.put("shoesNo", shoesNo);
             info.put("masterGuardNo", guardInfo.getGuardNo());
             retValue = guardDao.insShoesGuard(info);
+
+            // 앱 설치 링크 SMS발송
         }
         return retValue;
+    }
+
+    @Override
+    public int delGuardian(long guardNo) {
+        return guardDao.delGuardian(guardNo);
     }
 
     @Override

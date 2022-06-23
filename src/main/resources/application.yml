@@ -7,6 +7,12 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+
+sms:
+  sendUrl: http://apis.aligo.in/send/
+  key: 2ailet1dki7fa4pwkwu3em97krsdxn48
+  userId: kokasinc
+  sender: 07075252103
 ---
 spring:
   config:
@@ -25,6 +31,7 @@ datasources:
       username: kkokasin
       password: kkokasin21!
       maximumPoolSize: 5
+
 
 ---
 spring:
