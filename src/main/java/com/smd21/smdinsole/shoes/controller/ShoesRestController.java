@@ -124,8 +124,15 @@ public class ShoesRestController {
         return adminService.selCodeList(grupCd);
     }
 
+    @ApiOperation(value = "Code List 조회")
+    @RequestMapping(value = "/notice/get/{shoesNo}", method = RequestMethod.POST)
+    public NoticeModel getNotice(@PathVariable long shoesNo) throws Exception {
+
+        return shoesService.getNotice(shoesNo);
+    }
+
     @ApiOperation(value = "알람 해제 및 설정")
-    @RequestMapping(value = "/notice/{option}", method = RequestMethod.POST)
+    @RequestMapping(value = "/notice/set/{option}", method = RequestMethod.POST)
     public int setNotice(@PathVariable int option, @RequestBody NoticeModel notice) {
         Calendar cal1 = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -133,6 +140,7 @@ public class ShoesRestController {
             if (option == 0) {
                 // 다음날 오전 9시까지 해제
                 cal1.add(Calendar.DATE, 1); // 일 계산
+                cal1.set(Calendar.HOUR, 9);
             } else if (option == 99) {
                 // 재 설정까지 무기한
                 cal1.add(Calendar.DATE, 1000);
@@ -141,6 +149,7 @@ public class ShoesRestController {
             }
 
             Date date = new Date(cal1.getTimeInMillis());
+
             String nextNotiTime = dateFormat.format(date);
             notice.setNextNotiTime(nextNotiTime);
         }

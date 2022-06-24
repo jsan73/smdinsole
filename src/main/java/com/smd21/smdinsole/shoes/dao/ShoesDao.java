@@ -23,6 +23,6 @@ public interface ShoesDao {
 
     public NoticeModel getNotice(long shoesNo);
     public int insNotice(NoticeModel notice);
-    public int updNoticeCance(NoticeModel notice);
+    public int updNoticeCancel(NoticeModel notice);
 
 }

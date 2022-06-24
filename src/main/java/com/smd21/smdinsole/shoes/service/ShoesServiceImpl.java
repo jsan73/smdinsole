@@ -191,12 +191,18 @@ public class ShoesServiceImpl implements ShoesService {
     }
 
     @Override
+    public NoticeModel getNotice(long shoesNo){
+        return shoesDao.getNotice(shoesNo);
+    }
+
+    @Override
     @Transactional
     public int setNotice(NoticeModel notice, int option) {
         NoticeModel c_notice = shoesDao.getNotice(notice.getShoesNo());
+
         if(c_notice != null) {
             // 기존 알림 해제 설정이 되어 있는 상태 - 사용 안함으로 설정 후 재 설정
-            shoesDao.updNoticeCance(c_notice);
+            shoesDao.updNoticeCancel(c_notice);
 
             // 예약 문자 확인 후 취소
         }
@@ -206,6 +212,8 @@ public class ShoesServiceImpl implements ShoesService {
 
         }else{
             // 알람 해제 설정
+            long guardNo = rootService.getGusrdNo();
+            notice.setGuardNo(guardNo);
             shoesDao.insNotice(notice);
 
             // 알림 해제 문자 발송 및 알림 예약 문자 발송

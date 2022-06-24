@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class NoticeModel extends BaseVO {
+    private long noticeNo;
     private long shoesNo;
     private long guardNo;
     private String notiCd;

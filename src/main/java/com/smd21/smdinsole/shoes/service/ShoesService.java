@@ -20,6 +20,7 @@ public interface ShoesService {
     public void watchDanger(LocationModel loc, ShoesInfoModel shoesInfoModel);
     public List<LocationModel> selLocationList(SearchModel search);
 
+    public NoticeModel getNotice(long shoesNo);
     public int setNotice(NoticeModel notice, int option);
 
 }

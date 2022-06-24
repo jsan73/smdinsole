@@ -252,7 +252,8 @@
 
     <select id="getNotice" parameterType="Long" resultType="com.smd21.smdinsole.shoes.model.NoticeModel">
         SELECT
-            SHOES_NO
+            NOTICE_NO
+            , SHOES_NO
             , GUARD_NO
             , NOTI_CD
             , NEXT_NOTI_TIME
@@ -270,7 +271,7 @@
         VALUES(#{shoesNo}, #{guardNo}, #{notiCd}, #{nextNotiTime}, #{rsvSms}, "Y",  DATE_FORMAT(NOW(), '%Y%m%d%H%i%S'), DATE_FORMAT(NOW(), '%Y%m%d%H%i%S'))
     </insert>
 
-    <update id="updNoticeCance" parameterType="com.smd21.smdinsole.shoes.model.NoticeModel">
+    <update id="updNoticeCancel" parameterType="com.smd21.smdinsole.shoes.model.NoticeModel">
         UPDATE ST_NOTICE SET USE_YN = "N"
         WHERE
             NOTICE_NO = #{noticeNo}
