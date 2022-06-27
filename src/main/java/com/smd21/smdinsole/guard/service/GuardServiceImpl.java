@@ -38,10 +38,9 @@ public class GuardServiceImpl implements GuardService{
 
         loginInfo.put("guardPhone", guardPhone);
         loginInfo.put("guardPwd", pwd);
-
         GuardianModel guardModel = guardDao.getGuardian(loginInfo);
         if(guardModel != null) return guardModel;
-        else throw new UsernameNotFoundException(AppException.NO_DATA_FOUND.getReasonPhrase());
+        else throw new UsernameNotFoundException(AppException.NO_MATCH_GUARD.getReasonPhrase());
     }
 
     @Override
@@ -59,6 +58,25 @@ public class GuardServiceImpl implements GuardService{
         String token = jwtTokenProvider.createToken(tokenUserModel);
 
         return token;
+    }
+
+    @Override
+    public long getGuardCheck(String phoneNumber) throws Exception {
+        Map<String, String> loginInfo = new HashMap<>();
+
+        loginInfo.put("guardPhone", phoneNumber);
+        GuardianModel guardModel = guardDao.getGuardian(loginInfo);
+        if(guardModel != null) {
+            if(guardModel.getGuardPwd() == null)
+                // 첫 로그인 시도
+                return guardModel.getGuardNo();
+        }else{
+            // 등록된 보호자가 아님
+            throw new Exception(AppException.NO_GUARD.getReasonPhrase());
+        }
+        
+        // 로그인 진행
+        return 0;
     }
 
     @Override
@@ -111,6 +129,11 @@ public class GuardServiceImpl implements GuardService{
         long masterGuardNo = rootService.getMasterGusrdNo();
 
         return guardDao.selGuardianList(masterGuardNo);
+    }
+
+    @Override
+    public int regGuardian(GuardianModel guardInfo) {
+        return guardDao.regGuardian(guardInfo);
     }
 
 

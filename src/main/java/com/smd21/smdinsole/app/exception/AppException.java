@@ -18,7 +18,13 @@ public enum AppException {
 
 	RQSTCLAS_NOT_SUPPORTED(3011, "지정되지 않은 요청구분 입니다."),
 
-	NO_DATA_FOUND(3101, "검색결과가 없습니다.");
+	NO_DATA_FOUND(3101, "검색결과가 없습니다."),
+
+	NO_GUARD(3102, "보호자번호가 미등록되어 있습니다.<br>먼저 등록 요청 해주세요."),
+
+	NO_MATCH_GUARD(3103, "로그인 실패 - 비밀번호가 틀립니다.");
+
+
 
 
 	private final int value;

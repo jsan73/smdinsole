@@ -14,4 +14,6 @@ public interface GuardDao {
     public List<GuardianModel> selGuardianList(long masterGuardNo);
 
     public int updGuardPwd(GuardianModel guardInfo);
+
+    public int regGuardian(GuardianModel guardInfo);
 }

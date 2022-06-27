@@ -15,8 +15,11 @@
             ST_GUARDIAN
         WHERE
             GUARD_PHONE = FNC_ENC(#{guardPhone})
+          <if test="guardPwd != '' and guardPwd != null">
             AND GUARD_PWD = FNC_PW(#{guardPwd}, #{guardPhone})
+          </if>
     </select>
+
 
     <update id="updGuardPwd" parameterType="com.smd21.smdinsole.guard.model.GuardianModel">
         UPDATE ST_GUARDIAN SET GUARD_PWD = FNC_PW(#{guardPwd}, #{guardPhone})
@@ -56,6 +59,16 @@
         <if test="maketigAgreeYn != null and maketigAgreeYn != ''" > MAKETING_AGREE_YN = #{maketingAgreeYn}, </if>
         WHERE
         GUARD_NO = #{guardNo}
+    </update>
+
+    <update id="regGuardian" parameterType="com.smd21.smdinsole.guard.model.GuardianModel">
+        UPDATE ST_GUARDIAN
+        SET
+            GUARD_PWD = FNC_PW(#{guardPwd}, #{guardPhone})
+            , MAKETING_AGREE_YN = 'Y'
+            , UPD_DATE = DATE_FORMAT(NOW(), '%Y%m%d%H%i%S')
+        WHERE
+            GUARD_NO = #{guardNo} AND GUARD_PHONE = fnc_enc(#{guardPhone})
     </update>
 
     <insert id="insShoesGuard" parameterType="Map">

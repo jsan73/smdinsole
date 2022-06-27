@@ -52,6 +52,8 @@ public class SecurityConfig {
                     .antMatchers("/static/**")
                     .antMatchers("/error")
                     .antMatchers("/*/api/guard/get/token")
+                    .antMatchers("/*/api/guard/get/check")
+                    .antMatchers("/*/api/guard/reg")
                     .antMatchers("/*/api/admin/get/token")
                     .antMatchers("/*/api/shoes/loc/ins")
                     .antMatchers("/*/api/check/alive");
