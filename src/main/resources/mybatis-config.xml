@@ -9,5 +9,5 @@
         <setting name="callSettersOnNulls" value="true" />
         <setting name="returnInstanceForEmptyRow" value="true"/>
     </settings>
-    <objectFactory type="com.smd21.smdinsole.app.mybatis.ObjectFactory"></objectFactory>
+    <objectFactory type="com.kokasin.insole.app.mybatis.ObjectFactory"></objectFactory>
 </configuration>

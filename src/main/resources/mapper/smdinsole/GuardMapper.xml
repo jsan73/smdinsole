@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.smd21.smdinsole.guard.dao.GuardDao">
+<mapper namespace="com.kokasin.insole.guard.dao.GuardDao">
 
-    <select id="getGuardian" parameterType="Map" resultType="com.smd21.smdinsole.guard.model.GuardianModel">
+    <select id="getGuardian" parameterType="Map" resultType="com.kokasin.insole.guard.model.GuardianModel">
         SELECT
             GUARD_NO
              , GUARD_NAME
@@ -21,12 +21,12 @@
     </select>
 
 
-    <update id="updGuardPwd" parameterType="com.smd21.smdinsole.guard.model.GuardianModel">
+    <update id="updGuardPwd" parameterType="com.kokasin.insole.guard.model.GuardianModel">
         UPDATE ST_GUARDIAN SET GUARD_PWD = FNC_PW(#{guardPwd}, #{guardPhone})
         WHERE GUARD_NO = #{guardNo}
     </update>
 
-    <select id="selGuardianList" parameterType="Long" resultType="com.smd21.smdinsole.guard.model.GuardianModel">
+    <select id="selGuardianList" parameterType="Long" resultType="com.kokasin.insole.guard.model.GuardianModel">
         SELECT
             GUARD_NO
              , GUARD_NAME
@@ -45,12 +45,12 @@
         DELETE FROM ST_GUARDIAN WHERE GUARD_NO = #{guardNo}
     </delete>
 
-    <insert id="insGuardian" parameterType="com.smd21.smdinsole.guard.model.GuardianModel" useGeneratedKeys="true" keyProperty="guardNo">
+    <insert id="insGuardian" parameterType="com.kokasin.insole.guard.model.GuardianModel" useGeneratedKeys="true" keyProperty="guardNo">
         INSERT INTO ST_GUARDIAN (GUARD_NAME, GUARD_PHONE, MASTER_GUARD_NO, MAKETING_AGREE_YN, REG_DATE)
         VALUES(#{guardName}, fnc_enc(#{guardPhone}), #{masterGuardNo}, #{maketingAgreeYn}, DATE_FORMAT(NOW(), '%Y%m%d%H%i%S'))
     </insert>
 
-    <update id="updGuardian" parameterType="com.smd21.smdinsole.guard.model.GuardianModel">
+    <update id="updGuardian" parameterType="com.kokasin.insole.guard.model.GuardianModel">
         UPDATE ST_GUARDIAN
         SET
         <if test="guardName != null and guardName != ''" > GUARD_NAME = #{guardName}, </if>
@@ -61,7 +61,7 @@
         GUARD_NO = #{guardNo}
     </update>
 
-    <update id="regGuardian" parameterType="com.smd21.smdinsole.guard.model.GuardianModel">
+    <update id="regGuardian" parameterType="com.kokasin.insole.guard.model.GuardianModel">
         UPDATE ST_GUARDIAN
         SET
             GUARD_PWD = FNC_PW(#{guardPwd}, #{guardPhone})
@@ -71,7 +71,7 @@
             GUARD_NO = #{guardNo} AND GUARD_PHONE = fnc_enc(#{guardPhone})
     </update>
 
-    <insert id="insShoesGuard" parameterType="Map">
-        INSERT INTO ST_SHOES_GUARD (SHOES_NO, MASTER_GUARD_NO) VALUES(#{shoesNo}, #{masterGuardNo})
+    <insert id="insDeviceGuard" parameterType="Map">
+        INSERT INTO ST_DEVICE_GUARD (DEVICE_NO, MASTER_GUARD_NO) VALUES(#{deviceNo}, #{masterGuardNo})
     </insert>
 </mapper>

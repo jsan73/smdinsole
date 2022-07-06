@@ -23,8 +23,8 @@ logging:
     path: C:\home\smdinsole\logs\logback\
 datasources:
   - name: kkokasin
-    base-package: com.smd21.smdinsole.**.dao
-    aop-execution: com.smd21.smdinsole..service.*.*(..)
+    base-package: com.kokasin.insole.**.dao
+    aop-execution: com.kokasin.insole..service.*.*(..)
     data-source:
       driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
       jdbcUrl: jdbc:log4jdbc:mysql://kkokasin-dev-db.cmcdolkwxf6m.ap-northeast-2.rds.amazonaws.com:3306/kkokasin?characterEncoding=UTF-8&serverTimezone=UTC&noAccessToProcedureBodies=true&allowPublicKeyRetrieval=true&useSSL=false&allowMultiQueries=true&autoReconnect=true
@@ -40,11 +40,11 @@ spring:
       on-profile: dev
 logging:
   file:
-    path: C:\home\smdinsole\logs\logback\
+    path: /home/ec2-user/logs/logback
 datasources:
   - name: kkokasin
-    base-package: com.smd21.smdinsole.**.dao
-    aop-execution: com.smd21.smdinsole..service.*.*(..)
+    base-package: com.kokasin.insole.**.dao
+    aop-execution: com.kokasin.insole..service.*.*(..)
     data-source:
       driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
       jdbcUrl: jdbc:log4jdbc:mysql://kkokasin-dev-db.cmcdolkwxf6m.ap-northeast-2.rds.amazonaws.com:3306/kkokasin?characterEncoding=UTF-8&serverTimezone=UTC&noAccessToProcedureBodies=true&allowPublicKeyRetrieval=true&useSSL=false&allowMultiQueries=true&autoReconnect=true
@@ -59,11 +59,11 @@ spring:
       on-profile: prod
 logging:
   file:
-    path: C:\home\smdinsole\logs\logback\
+    path: /home/ec2-user/logs/logback
 datasources:
   - name: kkokasin
-    base-package: com.smd21.smdinsole.**.dao
-    aop-execution: com.smd21.smdinsole..service.*.*(..)
+    base-package: com.kokasin.insole.**.dao
+    aop-execution: com.kokasin.insole..service.*.*(..)
     data-source:
       driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
       jdbcUrl: jdbc:log4jdbc:mysql://kkokasin-dev-db.cmcdolkwxf6m.ap-northeast-2.rds.amazonaws.com:3306/kkokasin?characterEncoding=UTF-8&serverTimezone=UTC&noAccessToProcedureBodies=true&allowPublicKeyRetrieval=true&useSSL=false&allowMultiQueries=true&autoReconnect=true

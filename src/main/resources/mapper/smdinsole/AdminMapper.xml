@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.smd21.smdinsole.admin.dao.AdminDao">
+<mapper namespace="com.kokasin.insole.admin.dao.AdminDao">
 
-    <select id="selShoesInfoList" parameterType="Long" resultType="com.smd21.smdinsole.shoes.model.ShoesInfoModel">
+    <select id="selDeviceInfoList" parameterType="Long" resultType="com.kokasin.insole.device.model.DeviceInfoModel">
         SELECT
-            SI.SHOES_NO
-             , SI.SHOES_ID
-             , SI.SHOES_NUMBER
-             , SI.IS_ASSIGN
-             , SI.BATTERY
-             , SI.REG_DATE
-             , SI.UPD_DATE
-        FROM ST_SHOES_INFO SI
+            SI.DEVICE_NO
+            , SI.DEVICE_IMEI
+            , SI.DEVICE_NUMBER
+            , IFNULL(SI.NICK_NAME, "") AS NICK_NAME
+            , SI.IS_ASSIGN
+            , SI.LOC_CYCLE_1
+            , SI.LOC_CYCLE_2
+            , SI.LOC_CYCLE_3
+            , SI.REG_DATE
+            , SI.EXP_DATE
+            , SI.UPD_DATE
+        FROM ST_DEVICE_INFO SI
         WHERE
             REG_DATE >= #{startDt} AND REG_DATE <![CDATA[ <= ]]> #{endDt}
         ORDER BY SI.REG_DATE
@@ -20,31 +24,37 @@
         </if>
     </select>
 
-    <insert id="insShoesInfo" parameterType="com.smd21.smdinsole.shoes.model.ShoesInfoModel" useGeneratedKeys="true" keyProperty="shoesNo">
-        INSERT INTO ST_SHOES_INFO (
-            SHOES_ID
-            , SHOES_NUMBER
+    <insert id="insDeviceInfo" parameterType="com.kokasin.insole.device.model.DeviceInfoModel" useGeneratedKeys="true" keyProperty="deviceNo">
+        INSERT INTO ST_DEVICE_INFO (
+              DEVICE_IMEI
+            , DEVICE_NUMBER
             , IS_ASSIGN
-            , BATTERY
+            , LOC_CYCLE_1
+            , LOC_CYCLE_2
+            , LOC_CYCLE_3
+            , EXP_DATE
             , REG_DATE
             , UPD_DATE
-        ) VALUES (#{shoesId}, #{shoesNumber},#{isAssign}, #{battery}, DATE_FORMAT(NOW(), '%Y%m%d%H%i%S'), DATE_FORMAT(NOW(), '%Y%m%d%H%i%S'))
+        ) VALUES (#{deviceIMEI}, #{deviceNumber},#{isAssign}, #{locCycle1}, #{locCycle2}, #{locCycle3}, #{expDate}
+                  , DATE_FORMAT(NOW(), '%Y%m%d%H%i%S'), DATE_FORMAT(NOW(), '%Y%m%d%H%i%S'))
     </insert>
 
-    <update id="updShoesInfo" parameterType="com.smd21.smdinsole.shoes.model.ShoesInfoModel">
-        UPDATE ST_SHOES_INFO
+    <update id="updDeviceInfo" parameterType="com.kokasin.insole.device.model.DeviceInfoModel">
+        UPDATE ST_DEVICE_INFO
         SET
-            <if test="shoesId != null and shoesId != ''" > SHOES_ID = #{shoesId}, </if>
-            <if test="shoesNumber != null and shoesNumber != ''" > SHOES_NUMBER = #{shoesNumber}, </if>
+            <if test="deviceId != null and deviceId != ''" > DEVICE_IMEI = #{deviceIMEI}, </if>
+            <if test="deviceNumber != null and deviceNumber != ''" > DEVICE_NUMBER = #{deviceNumber}, </if>
             <if test="isAssign != null and isAssign != ''" > IS_ASSIGN = #{isAssign}, </if>
-            <if test="battery != null and battery != ''" > BATTERY = #{battery}, </if>
-            <if test="nickName != null and nickName != ''" > NICK_NAME = #{nickName}, </if>
+            <if test="locCycle1 != null and locCycle1 != ''" > LOC_CYCLE_1 = #{locCycle1}, </if>
+            <if test="locCycle2 != null and locCycle2 != ''" > LOC_CYCLE_2 = #{locCycle2}, </if>
+            <if test="locCycle3 != null and locCycle3 != ''" > LOC_CYCLE_3 = #{locCycle3}, </if>
+            <if test="expDate != null and expDate != ''" > EXP_DATE = #{expDate}, </if>
             UPD_DATE = DATE_FORMAT(NOW(), '%Y%m%d%H%i%S')
         WHERE
-            SHOES_NO = #{shoesNo}
+            DEVICE_NO = #{deviceNo}
     </update>
 
-    <select id="selCodeList" parameterType="String" resultType="com.smd21.smdinsole.admin.model.CodeModel">
+    <select id="selCodeList" parameterType="String" resultType="com.kokasin.insole.admin.model.CodeModel">
         SELECT
             CODE_CD
             , CODE_NM

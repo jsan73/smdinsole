@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kokasin.insole.device.dao.DeviceDao">
+
+    <select id="selDeviceInfoListByGuard" parameterType="Long" resultType="com.kokasin.insole.device.model.DeviceInfoModel">
+        SELECT
+            SI.DEVICE_NO
+             , SI.DEVICE_IMEI
+             , SI.DEVICE_NUMBER
+             , IFNULL(SI.NICK_NAME, "") AS NICK_NAME
+             , SI.IS_ASSIGN
+             , SI.LOC_CYCLE_1
+             , SI.LOC_CYCLE_2
+             , SI.LOC_CYCLE_3
+             , SI.BATTERY
+             , SI.REG_DATE
+             , SI.EXP_DATE
+             , SI.UPD_DATE
+        FROM ST_DEVICE_INFO SI
+            LEFT JOIN ST_DEVICE_GUARD SG ON SI.DEVICE_NO = SG.DEVICE_NO
+            LEFT JOIN ST_GUARDIAN G ON SG.MASTER_GUARD_NO = G.GUARD_NO
+        WHERE
+            SI.IS_ASSIGN = 'Y'
+            AND SI.EXP_DATE >= DATE_FORMAT(NOW(), '%Y%m%d')
+            AND G.GUARD_NO = #{masterGuardNo}
+        ORDER BY SI.DEVICE_NO
+    </select>
+
+    <select id="selDeviceInfoList" parameterType="com.kokasin.insole.device.model.SearchModel" resultType="com.kokasin.insole.device.model.DashboardModel">
+        SELECT
+            SI.DEVICE_NO
+             , SI.DEVICE_IMEI
+             , SI.DEVICE_NUMBER
+             , IFNULL(SI.NICK_NAME, "") AS NICK_NAME
+             , SI.IS_ASSIGN
+             , SI.LOC_CYCLE_1
+             , SI.LOC_CYCLE_2
+             , SI.LOC_CYCLE_3
+--              , SI.BATTERY
+             , SI.REG_DATE
+             , SI.EXP_DATE
+             , SI.UPD_DATE
+        FROM ST_DEVICE_INFO SI
+            LEFT JOIN ST_DEVICE_GUARD SG ON SG.DEVICE_NO = SI.DEVICE_NO
+        WHERE
+            SI.IS_ASSIGN = 'Y'
+            AND SG.MASTER_GUARD_NO = #{guardNo}
+            <if test="deviceNo != null and deviceNo != 0">
+                AND SI.DEVICE_NO = #{deviceNo}
+            </if>
+            AND SI.EXP_DATE >= DATE_FORMAT(NOW(), '%Y%m%d')
+        ORDER BY SI.DEVICE_NO
+    </select>
+
+<!--    <update id="updDeviceBattery" parameterType="Map">-->
+<!--        UPDATE ST_DEVICE_INFO-->
+<!--        SET-->
+<!--            BATTERY = #{battery}-->
+<!--            , UPD_DATE = DATE_FORMAT(NOW(), '%Y%m%d%H%i%S')-->
+<!--        WHERE-->
+<!--            DEVICE_NO = #{deviceNo}-->
+<!--    </update>-->
+
+    <update id="updDeviceNickName" parameterType="Map">
+        UPDATE ST_DEVICE_INFO
+        SET
+            NICK_NAME = #{nickName}
+          , UPD_DATE = DATE_FORMAT(NOW(), '%Y%m%d%H%i%S')
+        WHERE
+            DEVICE_NO = #{deviceNo}
+    </update>
+
+    <select id="getDeviceInfo" parameterType="String" resultType="com.kokasin.insole.device.model.DeviceInfoModel">
+        SELECT
+            SI.DEVICE_NO
+            , SI.DEVICE_IMEI
+            , SI.DEVICE_NUMBER
+            , IFNULL(SI.NICK_NAME, "") AS NICK_NAME
+            , SI.IS_ASSIGN
+            , SI.LOC_CYCLE_1
+            , SI.LOC_CYCLE_2
+            , SI.LOC_CYCLE_3
+            , SI.BATTERY
+            , SI.REG_DATE
+            , SI.EXP_DATE
+            , SI.UPD_DATE
+--             , SI.BATTERY
+            , SG.MASTER_GUARD_NO AS guardNo
+        FROM
+            ST_DEVICE_INFO SI LEFT JOIN ST_DEVICE_GUARD SG ON SI.DEVICE_NO = SG.DEVICE_NO
+        WHERE SI.DEVICE_IMEI = #{deviceIMEI}
+    </select>
+
+    <insert id="insActiveRange" parameterType="com.kokasin.insole.device.model.ActiveRangeModel" useGeneratedKeys="true" keyProperty="rangeNo">
+        INSERT INTO ST_ACTIVE_RANGE (
+            RANGE_NAME
+            , DEVICE_NO
+            , RANGE_ADDRESS
+            , LAT
+            , LNG
+            , RADIUS
+            , REG_DATE
+            , UPD_DATE
+            , REG_USER
+        )
+            ( SELECT
+                #{rangeName}
+                , SI.DEVICE_NO
+                , #{rangeAddress}
+                , #{lat}
+                , #{lng}
+                , #{radius}
+                , DATE_FORMAT(NOW(), '%Y%m%d%H%i%S')
+                , DATE_FORMAT(NOW(), '%Y%m%d%H%i%S')
+                , #{regUser}
+              FROM ST_DEVICE_INFO SI LEFT JOIN ST_DEVICE_GUARD SSG on SI.DEVICE_NO = SSG.DEVICE_NO
+              WHERE SSG.DEVICE_NO = #{deviceNo} AND SSG.MASTER_GUARD_NO = #{guardNo}
+            )
+    </insert>
+
+    <delete id="delActiveRange" parameterType="Map">
+        DELETE AR FROM ST_ACTIVE_RANGE AR
+            LEFT JOIN ST_DEVICE_INFO SI ON AR.DEVICE_NO = SI.DEVICE_NO
+            LEFT JOIN ST_DEVICE_GUARD SG ON SI.DEVICE_NO = SG.DEVICE_NO
+        WHERE
+            RANGE_NO = #{rangeNo}
+            AND SG.MASTER_GUARD_NO = #{guardNo}
+    </delete>
+
+    <insert id="updActiveRange" parameterType="com.kokasin.insole.device.model.ActiveRangeModel" useGeneratedKeys="true" keyProperty="rangeNo">
+        UPDATE ST_ACTIVE_RANGE
+        SET
+            RANGE_NAME = #{rangeName}
+            , RANGE_ADDRESS = #{rangeAddress}
+            , LAT = #{lat}
+            , LNG = #{lng}
+            , RADIUS = #{radius}
+            , UPD_DATE = DATE_FORMAT(NOW(), '%Y%m%d%H%i%S')
+            , REG_USER = #{regUser}
+        WHERE
+            RANGE_NO = #{rangeNo}
+
+    </insert>
+
+    <select id="selActiveRangeList" parameterType="Map" resultType="com.kokasin.insole.device.model.ActiveRangeModel">
+        SELECT
+            RANGE_NO
+            , RANGE_NAME
+            , AR.DEVICE_NO
+            , SG.MASTER_GUARD_NO AS guardNo
+            , RANGE_ADDRESS
+            , LAT
+            , LNG
+            , RADIUS
+            , REG_DATE
+            , UPD_DATE
+            , REG_USER
+        FROM ST_ACTIVE_RANGE AR
+            LEFT JOIN ST_DEVICE_GUARD SG ON AR.DEVICE_NO = SG.DEVICE_NO
+        WHERE
+            SG.MASTER_GUARD_NO = #{guardNo}
+            AND SG.DEVICE_NO = #{deviceNo}
+        ORDER BY AR.RANGE_NO
+    </select>
+
+    <select id="getActiveRange" parameterType="Map" resultType="com.kokasin.insole.device.model.ActiveRangeModel">
+        SELECT
+            RANGE_NO
+             , RANGE_NAME
+             , AR.DEVICE_NO
+             , SG.MASTER_GUARD_NO AS guardNo
+             , RANGE_ADDRESS
+             , LAT
+             , LNG
+             , RADIUS
+             , REG_DATE
+             , UPD_DATE
+             , REG_USER
+        FROM ST_ACTIVE_RANGE AR
+                 LEFT JOIN ST_DEVICE_GUARD SG ON AR.DEVICE_NO = SG.DEVICE_NO
+        WHERE
+            SG.MASTER_GUARD_NO = #{guardNo}
+            AND SG.DEVICE_NO = #{deviceNo}
+            AND AR.RANGE_NO = #{rangeNo}
+    </select>
+
+    <insert id="insLocation" parameterType="com.kokasin.insole.device.model.LocationModel" useGeneratedKeys="true" keyProperty="locationNo">
+        INSERT INTO ST_LOCATION (
+            DEVICE_NO
+            , LAT
+            , LNG
+            , STATUS
+            , BATTERY
+            , REPORT_DATE
+            , REG_DATE
+        ) VALUES(
+            #{deviceNo}
+            , #{lat}
+            , #{lng}
+            , #{status}
+            , #{reportDate}
+            , DATE_FORMAT(NOW(), '%Y%m%d%H%i%S')
+        )
+    </insert>
+
+    <select id="selLocationList" parameterType="com.kokasin.insole.device.model.SearchModel" resultType="com.kokasin.insole.device.model.LocationModel">
+        SELECT
+            LOCATION_NO
+            , SL.DEVICE_NO
+            , LAT
+            , LNG
+            , BATTERY
+            , STATUS
+            , REPORT_DATE
+        FROM ST_LOCATION SL
+                 LEFT JOIN ST_DEVICE_GUARD SG ON SL.DEVICE_NO = SG.DEVICE_NO
+        WHERE
+            SG.MASTER_GUARD_NO = #{guardNo}
+            AND SG.DEVICE_NO = #{deviceNo}
+            AND SL.REPORT_DATE >= #{startDt} AND SL.REPORT_DATE <![CDATA[ <= ]]> #{endDt}
+        ORDER BY SL.REPORT_DATE
+    </select>
+
+    <select id="getLocation" parameterType="com.kokasin.insole.device.model.SearchModel" resultType="com.kokasin.insole.device.model.LocationModel">
+        SELECT
+            LOCATION_NO
+             , SL.DEVICE_NO
+             , LAT
+             , LNG
+             , BATTERY
+             , STATUS
+             , REPORT_DATE
+        FROM ST_LOCATION SL
+                 LEFT JOIN ST_DEVICE_GUARD SG ON SL.DEVICE_NO = SG.DEVICE_NO
+        WHERE
+            SG.MASTER_GUARD_NO = #{guardNo}
+          AND SG.DEVICE_NO = #{deviceNo}
+        ORDER BY SL.REPORT_DATE DESC
+        LIMIT 1
+    </select>
+
+    <insert id="mergeDanger" parameterType="com.kokasin.insole.device.model.DangerModel">
+        INSERT INTO ST_DANGER (
+              DEVICE_NO
+            , LOC_NO
+            , LAT
+            , LON
+            , DANGER_YN
+            , REG_DATE
+            , UPD_DATE
+        ) VALUES(
+            #{deviceNo}
+            , #{locNo}
+            , #{lat}
+            , #{lng}
+            , #{dangerYn}
+            , DATE_FORMAT(NOW(), '%Y%m%d%H%i%S')
+            , DATE_FORMAT(NOW(), '%Y%m%d%H%i%S')
+        ) ON DUPLICATE KEY UPDATE
+            LOC_NO = #{locNo}
+            , LAT = #{lat}
+            , LNG = #{lng}
+            , DANGER_YN = #{dangerYn}
+            , UPD_DATE = DATE_FORMAT(NOW(), '%Y%m%d%H%i%S')
+    </insert>
+
+    <select id="getDanger" parameterType="Map" resultType="com.kokasin.insole.device.model.DangerModel">
+        SELECT
+            DEVICE_NO
+             , LOC_NO
+             , LAT
+             , LNG
+             , DANGER_YN
+             , REG_DT
+             , UPD_DT
+        FROM ST_DANGER D LEFT JOIN ST_DEVICE_GUARD SG ON D.DEVICE_NO = SG.DEVICE_NO
+        WHERE
+            D.DEVICE_NO = #{deviceNo}
+            AND SG.MASTER_GUARD_NO = #{guardNo}
+    </select>
+
+    <select id="getNotice" parameterType="Long" resultType="com.kokasin.insole.device.model.NoticeModel">
+        SELECT
+            NOTICE_NO
+            , DEVICE_NO
+            , GUARD_NO
+            , NOTI_CD
+            , NEXT_NOTI_TIME
+            , RSV_SMS
+            , USE_YN
+        FROM ST_NOTICE
+        WHERE
+            DEVICE_NO = #{deviceNo}
+            AND USE_YN = "Y"
+            AND NEXT_NOTI_TIME > DATE_FORMAT(NOW(), '%Y%m%d%H%i%S')
+    </select>
+
+    <insert id="insNotice" parameterType="com.kokasin.insole.device.model.NoticeModel" useGeneratedKeys="true" keyProperty="noticeNo">
+        INSERT INTO ST_NOTICE (DEVICE_NO, GUARD_NO, NOTI_CD, NEXT_NOTI_TIME, RSV_SMS, USE_YN, REG_DATE, UPD_DATE)
+        VALUES(#{deviceNo}, #{guardNo}, #{notiCd}, #{nextNotiTime}, #{rsvSms}, "Y",  DATE_FORMAT(NOW(), '%Y%m%d%H%i%S'), DATE_FORMAT(NOW(), '%Y%m%d%H%i%S'))
+    </insert>
+
+    <update id="updNoticeCancel" parameterType="com.kokasin.insole.device.model.NoticeModel">
+        UPDATE ST_NOTICE SET USE_YN = "N"
+        WHERE
+            NOTICE_NO = #{noticeNo}
+            AND DEVICE_NO = #{deviceNo}
+    </update>
+</mapper>
