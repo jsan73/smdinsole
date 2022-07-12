@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-@ApiModel(description = "단말 위치 정보 수신 모델")
+@ApiModel(description = "보호자")
 @Data
 public class GuardianModel extends BaseVO {
     @ApiModelProperty(value = "Sequence", hidden = true)
@@ -28,5 +28,14 @@ public class GuardianModel extends BaseVO {
 
     @ApiModelProperty(value = "마케팅 동의 여부", example = "Y", required = false)
     private String maketingAgreeYn;
+
+    private String autoLogin;
+    private String refreshToken;
+    private String deviceId;
+    private String pushYn;
+    private String pushToken;
+    private String osType;
+    private String appVer;
+    private String osVer;
 
 }

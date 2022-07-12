@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 @Component
-public class SendSMS {
+public class SMSService {
     @Value("${sms.sendUrl}")
     public String smsUrl;
 

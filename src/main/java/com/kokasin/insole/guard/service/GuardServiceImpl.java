@@ -5,6 +5,7 @@ import com.kokasin.insole.guard.dao.GuardDao;
 import com.kokasin.insole.app.security.provider.JwtTokenProvider;
 import com.kokasin.insole.common.RootService;
 import com.kokasin.insole.common.model.TokenUserModel;
+import com.kokasin.insole.guard.model.GuardLoginModel;
 import com.kokasin.insole.guard.model.GuardianModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,21 +43,50 @@ public class GuardServiceImpl implements GuardService{
         else throw new UsernameNotFoundException(AppException.NO_MATCH_GUARD.getReasonPhrase());
     }
 
-    @Override
-    public String getToken(String phoneNumber, String pwd) {
+    private GuardianModel loadUserByUserToken(String guardPhone, String refreshToken) throws UsernameNotFoundException {
+        Map<String, String> loginInfo = new HashMap<>();
 
+        loginInfo.put("guardPhone", guardPhone);
+        GuardianModel guardModel = guardDao.getGuardian(loginInfo);
+        if(guardModel != null) return guardModel;
+        else throw new UsernameNotFoundException(AppException.NO_MATCH_GUARD.getReasonPhrase());
+    }
+
+    private String getToken(GuardianModel guard, String[] arrRoles, int expire) {
         TokenUserModel tokenUserModel = new TokenUserModel();
-        GuardianModel guardianModel = this.loadUserByUserNo(phoneNumber, pwd);
 
-        tokenUserModel.setGuardPhone(guardianModel.getGuardPhone());
-        tokenUserModel.setMasterGuardNo(guardianModel.getMasterGuardNo());
-        tokenUserModel.setGuardNo(guardianModel.getGuardNo());
-        String[] arrRoles = {"ROLE_ACCESS"};
-        List<String> roles = Arrays.asList(arrRoles);
-        tokenUserModel.setRoles(roles);
-        String token = jwtTokenProvider.createToken(tokenUserModel);
+        tokenUserModel.setGuardPhone(guard.getGuardPhone());
+        tokenUserModel.setMasterGuardNo(guard.getMasterGuardNo());
+        tokenUserModel.setGuardNo(guard.getGuardNo());
 
+        if(arrRoles != null) {
+            List<String> roles = Arrays.asList(arrRoles);
+            tokenUserModel.setRoles(roles);
+        }
+        String token = jwtTokenProvider.createToken(tokenUserModel, expire);
         return token;
+    }
+
+    @Override
+    public Map<String, Object> login(GuardLoginModel guardLogin) {
+
+//        TokenUserModel tokenUserModel = new TokenUserModel();
+        GuardianModel guardianModel = this.loadUserByUserNo(guardLogin.getGuardPhone(), guardLogin.getGuardPwd());
+
+        if(guardLogin.getAutoLogin() != guardianModel.getAutoLogin()) {
+            guardianModel.setAutoLogin(guardLogin.getAutoLogin());
+            guardDao.updGuardAutoLogin(guardianModel);
+        }
+//        tokenUserModel.setGuardPhone(guardianModel.getGuardPhone());
+//        tokenUserModel.setMasterGuardNo(guardianModel.getMasterGuardNo());
+//        tokenUserModel.setGuardNo(guardianModel.getGuardNo());
+        String[] arrRoles = {"ROLE_ACCESS"};
+        String token = getToken(guardianModel, arrRoles, 1);
+
+        Map<String, Object> retMap = new HashMap<>();
+        retMap.put("token", token);
+        retMap.put("refreshToken", guardianModel.getRefreshToken());
+        return retMap;
     }
 
     @Override
@@ -76,6 +106,23 @@ public class GuardServiceImpl implements GuardService{
         
         // 로그인 진행
         return 0;
+    }
+
+    @Override
+    public String getTokenByRefresh(String refreshToken) {
+        TokenUserModel tokenUser = jwtTokenProvider.getTokenInfo(refreshToken);
+        GuardianModel guardianModel = loadUserByUserToken(tokenUser.getGuardPhone(), refreshToken);
+
+        String[] arrRoles = {"ROLE_ACCESS"};
+        String token = getToken(guardianModel, arrRoles, 1);
+
+        return token;
+    }
+
+    @Override
+    public int updGuardPhone(GuardianModel guard) {
+        guard.setGuardNo(rootService.getGuardNo());
+        return guardDao.updGuardPhoneInfo(guard);
     }
 
     @Override
@@ -132,6 +179,11 @@ public class GuardServiceImpl implements GuardService{
 
     @Override
     public int regGuardian(GuardianModel guardInfo) {
+
+        String refreshToken = getToken(guardInfo, null, 365*2);
+        guardInfo.setRefreshToken(refreshToken);
+
+
         return guardDao.regGuardian(guardInfo);
     }
 

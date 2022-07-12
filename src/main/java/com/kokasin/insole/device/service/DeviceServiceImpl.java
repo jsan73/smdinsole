@@ -221,7 +221,7 @@ public class DeviceServiceImpl implements DeviceService {
             // 알림 설정 디폴트로 전환 문자 발송
 
         }else{
-            // 알람 해제 설정
+            // 알림 해제 설정
             long guardNo = rootService.getGuardNo();
             notice.setGuardNo(guardNo);
             deviceDao.insNotice(notice);

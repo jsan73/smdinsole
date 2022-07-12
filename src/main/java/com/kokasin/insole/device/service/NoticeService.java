@@ -1,7 +1,7 @@
 package com.kokasin.insole.device.service;
 
 import com.kokasin.insole.device.model.DeviceInfoModel;
-import com.kokasin.insole.common.SendSMS;
+import com.kokasin.insole.common.SMSService;
 import com.kokasin.insole.common.model.SMSModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +17,10 @@ public class NoticeService {
     final static Logger logger = LoggerFactory.getLogger(NoticeService.class);
 
     final
-    SendSMS sendSMS;
+    SMSService SMSService;
 
-    public NoticeService(SendSMS sendSMS) {
-        this.sendSMS = sendSMS;
+    public NoticeService(SMSService SMSService) {
+        this.SMSService = SMSService;
     }
 
     @Async
@@ -74,6 +74,6 @@ public class NoticeService {
 
 
 
-        sendSMS.sendSms(sms);
+        SMSService.sendSms(sms);
     }
 }

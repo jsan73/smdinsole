@@ -34,7 +34,7 @@ public class AdminServiceImpl implements AdminService {
         String[] arrRoles = {"ROLE_ADMIN"};
         List<String> roles = Arrays.asList(arrRoles);
         tokenUserModel.setRoles(roles);
-        String token = jwtTokenProvider.createToken(tokenUserModel);
+        String token = jwtTokenProvider.createToken(tokenUserModel,1);
 
         return token;
     }

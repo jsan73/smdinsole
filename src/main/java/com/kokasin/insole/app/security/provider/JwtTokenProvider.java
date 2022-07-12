@@ -34,7 +34,7 @@ public class JwtTokenProvider {
 
 
 	// Jwt 토큰 생성
-	public String createToken(TokenUserModel tokenUser) {
+	public String createToken(TokenUserModel tokenUser, int addDate) {
 
 		Claims claims = Jwts.claims().setSubject("insole token");
 
@@ -50,15 +50,16 @@ public class JwtTokenProvider {
 
 		claims.put("roles", tokenUser.getRoles());
 		Date nowDate = new Date();
-		Date exDate = new Date();
+		//Date exDate = new Date();
 
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(nowDate);
-		calendar.set(Calendar.HOUR_OF_DAY, 23);
-		calendar.set(Calendar.MINUTE, 59);
-		calendar.set(Calendar.SECOND, 59);
+		calendar.add(Calendar.DATE, addDate);
+//		calendar.set(Calendar.HOUR_OF_DAY, 23);
+//		calendar.set(Calendar.MINUTE, 59);
+//		calendar.set(Calendar.SECOND, 59);
 
-		exDate = calendar.getTime();
+		Date exDate = calendar.getTime();
 
 		return Jwts.builder()
 				.setClaims(claims) // 데이터

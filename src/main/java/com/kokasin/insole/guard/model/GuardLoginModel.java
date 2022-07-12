@@ -12,4 +12,6 @@ public class GuardLoginModel {
 
     @ApiModelProperty(value = "비밀번호", example = "1234", required = true)
     private String guardPwd;
+
+    private String autoLogin;
 }

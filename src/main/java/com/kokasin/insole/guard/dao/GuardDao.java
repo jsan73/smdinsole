@@ -16,4 +16,8 @@ public interface GuardDao {
     public int updGuardPwd(GuardianModel guardInfo);
 
     public int regGuardian(GuardianModel guardInfo);
+
+    public int updGuardPhoneInfo(GuardianModel guardInfo);
+
+    public int updGuardAutoLogin(GuardianModel guardInfo);
 }

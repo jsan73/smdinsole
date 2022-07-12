@@ -170,7 +170,10 @@ public class DeviceRestController {
                     int locResult = deviceService.insLocation(loc);
                     if (locResult == 0) throw new Exception();
 
-                    deviceService.watchDanger(loc, device);
+                    // 알림 해제 없을 때
+                    NoticeModel notice = deviceService.getNotice(device.getDeviceNo());
+                    if(notice != null)
+                        deviceService.watchDanger(loc, device);
                 }
             }
         }else{

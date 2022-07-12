@@ -14,6 +14,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/api/guard")
 @RestController
@@ -27,23 +28,39 @@ public class GuardRestController {
 
     @ApiOperation(value = "로그인", notes="rows, page")
     @RequestMapping(value = "/get/token", method = RequestMethod.POST)
-    public String getToken(@RequestBody GuardLoginModel guard) throws Exception {
+    public Map<String, Object> getToken(@RequestBody GuardLoginModel guard) throws Exception {
 
-        return guardService.getToken(guard.getGuardPhone(), guard.getGuardPwd());
+
+        return guardService.login(guard);
     }
 
-    @ApiOperation(value = "로그인 체크", notes="rows, page")
+    @ApiOperation(value = "최초 로그인 체크 - 관리자 등록 또는 보호자 추가 여부 확인", notes="")
     @RequestMapping(value = "/get/check", method = RequestMethod.POST)
     public long getGuardCheck(@RequestBody GuardLoginModel guard) throws Exception {
 
         return guardService.getGuardCheck(guard.getGuardPhone());
     }
 
+    @ApiOperation(value = "토큰 재발급", notes="")
+    @RequestMapping(value = "/get/ref/token", method = RequestMethod.POST)
+    public String getRefreshToken(@RequestBody String refreshToken) throws Exception {
+
+        return guardService.getTokenByRefresh(refreshToken);
+    }
+
+
     @ApiOperation(value = "가입", notes="rows, page")
     @RequestMapping(value = "/reg", method = RequestMethod.POST)
     public int regGuard(@RequestBody GuardianModel guard) throws Exception {
 
         return guardService.regGuardian(guard);
+    }
+
+    @ApiOperation(value = "폰 정보 등록 (DEVICE_ID, PUSH_TOKEN", notes="")
+    @RequestMapping(value = "/upd/phone", method = RequestMethod.POST)
+    public int updGuardPhone(@RequestBody GuardianModel guard) throws Exception {
+
+        return guardService.updGuardPhone(guard);
     }
 
     @ApiOperation(value = "비밀번호 변경")
