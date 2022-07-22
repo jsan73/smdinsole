@@ -23,4 +23,7 @@ public interface DeviceService {
     public NoticeModel getNotice(long deviceNo);
     public int setNotice(NoticeModel notice, int option);
 
+    public int reqCurrentLoc(String deviceIMEI);
+    public int rcvCurrentLoc(long deviceNo);
+
 }

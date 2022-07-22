@@ -27,7 +27,7 @@ public class HttpUtil {
 	private String headerName;
 	private String headerValue;
 
-	public void get(String requestURL) throws Exception  {
+	public int get(String requestURL) throws Exception  {
 
 		HttpClient client = HttpClientBuilder.create().build(); // HttpClient 생성
 		HttpGet getRequest = new HttpGet(requestURL); 			//GET 메소드 URL 생성
@@ -35,15 +35,15 @@ public class HttpUtil {
 			getRequest.addHeader(headerName, headerValue); //KEY 입력
 		}
 		response = client.execute(getRequest);
-
+		return response.getStatusLine().getStatusCode();
 		//Response 출력
-		if (response.getStatusLine().getStatusCode() != 200) {
-			System.out.println("response is error : " + response.getStatusLine().getStatusCode());
-		}
+//		if (response.getStatusLine().getStatusCode() != 200) {
+//			System.out.println("response is error : " + response.getStatusLine().getStatusCode());
+//		}
 
 	}
 
-	public void post(String requestURL, Map<String, String> parameters) throws Exception {
+	public int post(String requestURL, Map<String, String> parameters) throws Exception {
 		HttpEntity entity = null;
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		if(parameters != null) {
@@ -56,21 +56,21 @@ public class HttpUtil {
 		}
 
 
-		this.post(requestURL, entity, "form");
+		return this.post(requestURL, entity, "form");
 	}
 
-	public void jpost(String requestURL, JSONObject json) throws Exception {
+	public int jpost(String requestURL, JSONObject json) throws Exception {
 		HttpEntity entity = null;
 
 		if(json != null) {
 			entity = new StringEntity(json.toJSONString(), "utf-8");
 		}
 
-		this.post(requestURL, entity, "json");
+		return this.post(requestURL, entity, "json");
 
 	}
 
-	private void post(String requestURL, HttpEntity entity, String contentType) throws Exception {
+	private int post(String requestURL, HttpEntity entity, String contentType) throws Exception {
 		HttpClient client = HttpClientBuilder.create().build(); // HttpClient 생성
 
 		HttpPost postRequest = new HttpPost(requestURL); //POST 메소드 URL 새성
@@ -89,9 +89,10 @@ public class HttpUtil {
 		}
 
 		response = client.execute(postRequest);
-		if (response.getStatusLine().getStatusCode() != 200) {
-			System.out.println("response is error : " + response.getStatusLine().getStatusCode());
-		}
+		return response.getStatusLine().getStatusCode();
+//		if (response.getStatusLine().getStatusCode() != 200) {
+//			System.out.println("response is error : " + response.getStatusLine().getStatusCode());
+//		}
 
 	}
 

@@ -7,6 +7,7 @@ import com.kokasin.insole.common.RootService;
 import com.kokasin.insole.common.model.TokenUserModel;
 import com.kokasin.insole.guard.model.GuardLoginModel;
 import com.kokasin.insole.guard.model.GuardianModel;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +22,15 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class GuardServiceImpl implements GuardService{
     final static Logger logger = LoggerFactory.getLogger(GuardServiceImpl.class);
 
-    @Autowired
-    RootService rootService;
+    final RootService rootService;
 
-    @Autowired
-    JwtTokenProvider jwtTokenProvider;
+    final JwtTokenProvider jwtTokenProvider;
 
-    @Autowired
-    GuardDao guardDao;
+    final GuardDao guardDao;
 
     private GuardianModel loadUserByUserNo(String guardPhone, String pwd) throws UsernameNotFoundException {
         Map<String, String> loginInfo = new HashMap<>();

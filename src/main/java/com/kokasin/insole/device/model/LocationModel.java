@@ -13,8 +13,6 @@ public class LocationModel {
     @ApiModelProperty(value = "단말 No",  hidden = true,  example = "25", required = false)
     private long deviceNo;
 
-//    @ApiModelProperty(value = "단말 번호", example = "01112345678", required = true)
-//    private String deviceNumber;
 
     @ApiModelProperty(value = "위도", example = "37.5709535", required = true)
     private double lat;

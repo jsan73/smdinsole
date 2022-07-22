@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kokasin.insole.common.sms.dao.SmsDao">
+
+    <insert id="insSmsLog" parameterType="com.kokasin.insole.common.sms.model.SmsLogModel" useGeneratedKeys="true" keyProperty="smsNo">
+        INSERT INTO ST_SMS_LOG
+            (RECEIVER, MSG_ID, SEND_MSG, RESULT_CODE, RESULT_MSG, SUCCESS_CNT, ERROR_CNT, SEND_TO, REG_DATE, RES_CODE)
+        VALUES (
+                #{receiver}
+                ,#{msgId}
+                ,#{sendMsg}
+                ,#{resultCode}
+                ,#{resultMsg}
+                ,#{successCnt}
+                ,#{errorCnt}
+                ,#{sendTo}
+                ,DATE_FORMAT(NOW(), '%Y%m%d%H%i%S')
+                , #{resCode}
+        )
+    </insert>
+</mapper>

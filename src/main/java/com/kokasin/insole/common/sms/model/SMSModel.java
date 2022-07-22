@@ -1,4 +1,4 @@
-package com.kokasin.insole.common.model;
+package com.kokasin.insole.common.sms.model;
 
 import lombok.Data;
 

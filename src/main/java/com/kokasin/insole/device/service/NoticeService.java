@@ -1,51 +1,57 @@
 package com.kokasin.insole.device.service;
 
-import com.kokasin.insole.device.model.DeviceInfoModel;
-import com.kokasin.insole.common.SMSService;
-import com.kokasin.insole.common.model.SMSModel;
+import com.kokasin.insole.common.RootService;
+import com.kokasin.insole.common.sms.service.SMSService;
+import com.kokasin.insole.common.sms.model.SMSModel;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-@Service
+@Component
+@RequiredArgsConstructor
 public class NoticeService {
     final static Logger logger = LoggerFactory.getLogger(NoticeService.class);
 
+    @Value("${server.url}")
+    public String serverUrl;
+
     final
-    SMSService SMSService;
+    SMSService smsService;
 
-    public NoticeService(SMSService SMSService) {
-        this.SMSService = SMSService;
+    public int sendSmsToGuard(String phoneNumber, String msg) {
+        SMSModel sms = new SMSModel();
+
+        sms.setReceiver(phoneNumber);
+        sms.setMsg(msg);
+        return smsService.sendSms(sms, "GUARD");
     }
 
-    @Async
-    public void checkDanger(DeviceInfoModel device) {
-        try {
-            Thread.sleep(5000);
-            // 알림 제외 처리 유무 확인
+    public int sendSmsToDevice(String devicePhone, String msg) {
+        SMSModel sms = new SMSModel();
 
-            // 알림 발송
-            logger.info("알림 발송");
-            // 현재 위치 전송 문자 발송
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        msg = smsFormat(msg);
+        sms.setReceiver(devicePhone);
+        sms.setMsg(msg);
+        return smsService.sendSms(sms, "DEVICE");
     }
 
 
+    public String smsFormat(String msg){
 
-    public String smsFormat(){
         String header = "YTS";      // 일반정보 Command header
-        String sendFr = "0";        // 전송주기(초) 0일경우 해제 : FR
-        String url = "www.kokasin.com";            // url : IP:포트
-        String smsNumber1 = "01064089967";     // 긴급 SMS 수신 번호 : N1
+        String sendFr = msg;        // 전송주기(초) 0일경우 해제 : FR
+        String url = serverUrl;            // url : IP:포트
+        String smsNumber1 = "";     // 긴급 SMS 수신 번호 : N1
         String smsNumber2 = "";     // 테스트 전화번호 : N2
-        String mode = "0";            // Sleep 시 3G on(1)/off(0) : 3G
+        String mode = "1";            // Sleep 시 3G on(1)/off(0) : 3G
 
         Map<String, String> mapSms = new LinkedHashMap<>();
         mapSms.put("FR", sendFr);
@@ -56,24 +62,13 @@ public class NoticeService {
 
         Set<String> keys = mapSms.keySet();
 
-        String msg = "";
+        String retMmsg = "";
         for (String key : keys) {
-            msg += "," + key + ":" + mapSms.get(key);
+            retMmsg += "," + key + ":" + mapSms.get(key);
         }
 
-        return header + msg;
+        return header + retMmsg;
 
     }
 
-    public void alram() {
-        String msg = smsFormat();
-        SMSModel sms = new SMSModel();
-
-        sms.setReceiver("01052490965");
-        sms.setMsg(msg);
-
-
-
-        SMSService.sendSms(sms);
-    }
 }

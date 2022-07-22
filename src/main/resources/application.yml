@@ -31,7 +31,8 @@ datasources:
       username: kkokasin
       password: kkokasin21!
       maximumPoolSize: 5
-
+server:
+  url: api-dev.kokasin.com
 
 ---
 spring:
@@ -51,7 +52,8 @@ datasources:
       username: kkokasin
       password: kkokasin21!
       maximumPoolSize: 5
-
+server:
+  url: api-dev.kokasin.com
 ---
 spring:
   config:
@@ -70,3 +72,5 @@ datasources:
       username: kkokasin
       password: kkokasin21!
       maximumPoolSize: 5
+server:
+  url: api.kokasin.com

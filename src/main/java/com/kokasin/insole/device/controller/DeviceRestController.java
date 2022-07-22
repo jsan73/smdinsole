@@ -103,12 +103,9 @@ public class DeviceRestController {
 
 
     @ApiOperation(value = "현재위치 요청")
-    @RequestMapping(value = "/req/{deviceNo}", method = RequestMethod.POST)
-    public int reqCurrentLocation(@PathVariable long deviceNo) {
-        
-        // 기기에 SMS 발송
-        // 현재 위치 수신 시 Push 전송
-        return 1;
+    @RequestMapping(value = "/req/{deviceIMEI}", method = RequestMethod.POST)
+    public int reqCurrentLoc(@PathVariable String deviceIMEI) {
+        return deviceService.reqCurrentLoc(deviceIMEI);
     }
 
     @ApiOperation(value = "Code List 조회")
@@ -130,6 +127,7 @@ public class DeviceRestController {
     public int setNotice(@PathVariable int option, @RequestBody NoticeModel notice) {
         Calendar cal1 = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+        // option 100 reset
         if(option != 100) {
             if (option == 0) {
                 // 다음날 오전 9시까지 해제
@@ -168,12 +166,12 @@ public class DeviceRestController {
                     loc.setReportDate(params[4]);
 
                     int locResult = deviceService.insLocation(loc);
-                    if (locResult == 0) throw new Exception();
-
-                    // 알림 해제 없을 때
-                    NoticeModel notice = deviceService.getNotice(device.getDeviceNo());
-                    if(notice != null)
+                    if (locResult > 0) {
                         deviceService.watchDanger(loc, device);
+
+                        // 현재 위치 전송 요구 일 경우 처리
+                        deviceService.rcvCurrentLoc(device.getDeviceNo());
+                    }
                 }
             }
         }else{

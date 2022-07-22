@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kokasin.insole.admin.dao.AdminDao">
-
+<!--    EXPLAIN  SELECT-->
+<!--    DI.DEVICE_NO-->
+<!--    , DEVICE_IMEI-->
+<!--    , DEVICE_NUMBER-->
+<!--    , FNC_DEC(SG.GUARD_PHONE) GUARD_PHONE-->
+<!--    , IS_ASSIGN-->
+<!--    , LOC_CYCLE_1-->
+<!--    , LOC_CYCLE_2-->
+<!--    , LOC_CYCLE_3-->
+<!--    , BATTERY-->
+<!--    , NICK_NAME-->
+<!--    , EXP_DATE-->
+<!--    , DI.REG_DATE-->
+<!--    , DI.UPD_DATE-->
+<!--    , (SELECT COUNT(*) FROM ST_LOCATION WHERE DEVICE_NO = DI.DEVICE_NO) AS LOC_CNT-->
+<!--    , (SELECT REPORT_DATE FROM ST_LOCATION WHERE DEVICE_NO = DI.DEVICE_NO ORDER BY LOCATION_NO DESC LIMIT 1) AS REPORT_DATE-->
+<!--    , (SELECT STATUS FROM ST_LOCATION WHERE DEVICE_NO = DI.DEVICE_NO ORDER BY LOCATION_NO DESC LIMIT 1) AS STATUS-->
+<!--    FROM ST_DEVICE_INFO DI LEFT OUTER JOIN ST_DEVICE_GUARD DG ON DG.DEVICE_NO = DI.DEVICE_NO-->
+<!--    LEFT JOIN ST_GUARDIAN SG on DG.MASTER_GUARD_NO = SG.GUARD_NO;-->
     <select id="selDeviceInfoList" parameterType="Long" resultType="com.kokasin.insole.device.model.DeviceInfoModel">
         SELECT
             SI.DEVICE_NO

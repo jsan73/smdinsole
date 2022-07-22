@@ -12,7 +12,6 @@
              , SI.LOC_CYCLE_1
              , SI.LOC_CYCLE_2
              , SI.LOC_CYCLE_3
-             , SI.BATTERY
              , SI.REG_DATE
              , SI.EXP_DATE
              , SI.UPD_DATE
@@ -36,7 +35,6 @@
              , SI.LOC_CYCLE_1
              , SI.LOC_CYCLE_2
              , SI.LOC_CYCLE_3
---              , SI.BATTERY
              , SI.REG_DATE
              , SI.EXP_DATE
              , SI.UPD_DATE
@@ -80,11 +78,9 @@
             , SI.LOC_CYCLE_1
             , SI.LOC_CYCLE_2
             , SI.LOC_CYCLE_3
-            , SI.BATTERY
             , SI.REG_DATE
             , SI.EXP_DATE
             , SI.UPD_DATE
---             , SI.BATTERY
             , SG.MASTER_GUARD_NO AS guardNo
         FROM
             ST_DEVICE_INFO SI LEFT JOIN ST_DEVICE_GUARD SG ON SI.DEVICE_NO = SG.DEVICE_NO
@@ -264,7 +260,7 @@
             , UPD_DATE = DATE_FORMAT(NOW(), '%Y%m%d%H%i%S')
     </insert>
 
-    <select id="getDanger" parameterType="Map" resultType="com.kokasin.insole.device.model.DangerModel">
+    <select id="getDanger" parameterType="Long" resultType="com.kokasin.insole.device.model.DangerModel">
         SELECT
             DEVICE_NO
              , LOC_NO
@@ -273,10 +269,9 @@
              , DANGER_YN
              , REG_DT
              , UPD_DT
-        FROM ST_DANGER D LEFT JOIN ST_DEVICE_GUARD SG ON D.DEVICE_NO = SG.DEVICE_NO
+        FROM ST_DANGER
         WHERE
-            D.DEVICE_NO = #{deviceNo}
-            AND SG.MASTER_GUARD_NO = #{guardNo}
+            DEVICE_NO = #{deviceNo}
     </select>
 
     <select id="getNotice" parameterType="Long" resultType="com.kokasin.insole.device.model.NoticeModel">
@@ -306,4 +301,38 @@
             NOTICE_NO = #{noticeNo}
             AND DEVICE_NO = #{deviceNo}
     </update>
+
+    <insert id="insReqLoc" parameterType="com.kokasin.insole.device.model.RequestLocModel" useGeneratedKeys="true" keyProperty="reqNo">
+        INSERT INTO ST_REQUEST_LOC (
+                                DEVICE_NO
+                              , REQ_GUARD_NO
+                              , REQ_DATE
+        ) VALUES(
+                #{deviceNo}
+                , #{reqGuardNo}
+                , DATE_FORMAT(NOW(), '%Y%m%d%H%i%S')
+        )
+    </insert>
+
+    <update id="updReqLoc" parameterType="com.kokasin.insole.device.model.RequestLocModel">
+        UPDATE ST_REQUEST_LOC SET
+            RCV_YN = "Y"
+            , RCV_DATE = DATE_FORMAT(NOW(), '%Y%m%d%H%i%S')
+        WHERE
+            DEVICE_NO = #{deviceNo}
+            REQ_GUARD_NO = #{guardNo}
+            RCV_YN = 'N'
+    </update>
+
+    <select id="selReqLoc" parameterType="Long" resultType="com.kokasin.insole.device.model.RequestLocModel">
+        SELECT
+            REQ_NO
+            , DEVICE_NO
+            , REQ_GUARD_NO
+            , REQ_DATE
+        FROM ST_REQUEST_LOC
+        WHERE
+            DEVICE_NO = #{deviceNo}
+          AND RCV_YN = "N"
+    </select>
 </mapper>

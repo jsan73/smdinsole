@@ -24,4 +24,16 @@ public class RootService {
 
         return user.getGuardNo();
     }
+
+    public String getGuardPhone() {
+        TokenUserModel user = (TokenUserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return user.getGuardPhone();
+    }
+
+    public TokenUserModel getGuardInfo() {
+        TokenUserModel user = (TokenUserModel) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return user;
+    }
 }

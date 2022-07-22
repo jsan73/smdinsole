@@ -7,6 +7,8 @@ import java.util.Map;
 
 public interface GuardDao {
     public GuardianModel getGuardian(Map<String, String> loginInfo);
+
+    public GuardianModel getGuardPush(long guardNo);
     public int insGuardian(GuardianModel guardInfo);
     public int updGuardian(GuardianModel guardInfo);
     public int delGuardian(long guardNo);

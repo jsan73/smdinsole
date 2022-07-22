@@ -27,7 +27,17 @@
             AND REFRESH_TOKEN = #{refreshToken}) AND AUTO_LOGIN = 'Y'
           </if>
     </select>
-
+    <select id="getGuardPush" parameterType="Long" resultType="com.kokasin.insole.guard.model.GuardianModel">
+        SELECT
+            GUARD_NO
+            , DEVICE_ID
+            , IFNULL(PUSH_TOKEN, '') AS PUSH_TOKEN
+        FROM
+            ST_GUARDIAN
+        WHERE
+            GUARD_NO = #{guardNo}
+            AND PUSH_YN = 'Y'
+    </select>
 
 
 

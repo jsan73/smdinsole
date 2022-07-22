@@ -1,32 +1,44 @@
 package com.kokasin.insole.device.service;
 
+import com.kokasin.insole.common.FCMService;
+import com.kokasin.insole.common.sms.service.SMSService;
+import com.kokasin.insole.common.sms.model.SMSModel;
+import com.kokasin.insole.common.model.TokenUserModel;
 import com.kokasin.insole.device.dao.DeviceDao;
 import com.kokasin.insole.device.model.*;
 import com.kokasin.insole.common.CommonUtil;
 import com.kokasin.insole.common.RootService;
+import com.kokasin.insole.guard.dao.GuardDao;
+import com.kokasin.insole.guard.model.GuardianModel;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
 @Service
+@RequiredArgsConstructor
 public class DeviceServiceImpl implements DeviceService {
     final static Logger logger = LoggerFactory.getLogger(DeviceServiceImpl.class);
 
-    @Autowired
-    RootService rootService;
+    final RootService rootService;
 
-    @Autowired
-    DeviceDao deviceDao;
+    final DeviceDao deviceDao;
 
-    @Autowired
-    private NoticeService noticeService;
+    final GuardDao guardDao;
+
+    final NoticeService noticeService;
+    final FCMService fcmService;
+
+    final
+    SMSService smsService;
 
     @Override
     public List<DeviceInfoModel> selDeviceInfoListByGuard() {
@@ -137,49 +149,79 @@ public class DeviceServiceImpl implements DeviceService {
 
     @Override
     @Transactional
-    public void watchDanger(LocationModel loc, DeviceInfoModel deviceInfoModel) {
-        long deviceNo = deviceInfoModel.getDeviceNo();
-        long guardNo = deviceInfoModel.getGuardNo();
+    public void watchDanger(LocationModel loc, DeviceInfoModel device) {
+        long deviceNo = device.getDeviceNo();
+        long guardNo = device.getGuardNo();
+
         Map<String, Long> deviceMap = new HashMap<>();
         deviceMap.put("deviceNo", deviceNo);
         deviceMap.put("guardNo", guardNo);
 
-        // 활동 반경 리스트 조회
-        List<ActiveRangeModel> rangeList = deviceDao.selActiveRangeList(deviceMap);
-        if(rangeList.size() > 0) {
+        double lat2 = loc.getLat();
+        double lon2 = loc.getLng();
 
-            double lat2 = loc.getLat();
-            double lon2 = loc.getLng();
+        DangerModel danger = new DangerModel();
+        danger.setDeviceNo(deviceNo);
+        danger.setLocNo(loc.getLocationNo());
+        danger.setLat(lat2);
+        danger.setLng(lon2);
+        danger.setDangerYn("Y");
 
-            DangerModel danger = new DangerModel();
-            danger.setDeviceNo(deviceNo);
-            danger.setLocNo(loc.getLocationNo());
-            danger.setLat(lat2);
-            danger.setLng(lon2);
-            danger.setDangerYn("Y");
+        DangerModel preDanger = deviceDao.getDanger(deviceNo);
+        String preDangerYn = "N";
+        if(preDanger != null) preDangerYn = preDanger.getDangerYn();
 
-            for (ActiveRangeModel range : rangeList) {
-                // 활동 반경 이내인지 여부 조회
-                double lat1 = range.getLat();
-                double lon1 = range.getLng();
-                double radius = range.getRadius();
 
-                double distance = CommonUtil.distance(lat1, lon1, lat2, lon2, "meter");
-                if (distance < radius) {
-                    // 활동 반경 내에 위치
-                    danger.setDangerYn("N");
-                    break;
+        NoticeModel notice = this.getNotice(device.getDeviceNo());
+        if(notice == null) {
+            // 알림해제를 하지 않았을 경우
+            // 안심좀 리스트 조회
+            List<ActiveRangeModel> rangeList = deviceDao.selActiveRangeList(deviceMap);
+            if (rangeList.size() > 0) {
+                for (ActiveRangeModel range : rangeList) {
+                    // 활동 반경 이내인지 여부 조회
+                    double lat1 = range.getLat();
+                    double lon1 = range.getLng();
+                    double radius = range.getRadius();
+
+                    double distance = CommonUtil.distance(lat1, lon1, lat2, lon2, "meter");
+                    if (distance < radius) {
+                        // 활동 반경 내에 위치
+                        danger.setDangerYn("N");
+                        break;
+                    }
+                }
+
+                if ("Y".equals(danger.getDangerYn())) {
+                    // master guardno로 전체 보호자 검색
+                    List<GuardianModel> guardList = guardDao.selGuardianList(device.getGuardNo());
+                    if(guardList != null) {
+                        List<String> receiver = new ArrayList<>();
+                        for(GuardianModel guard: guardList)
+                            receiver.add(guard.getGuardPhone());
+
+                        noticeService.sendSmsToGuard(String.join(",",receiver), "안심존 이탈");
+                    }
+
+                    // 10분주기 전송으로 요청 (최초)
+                    if("N".equals(preDangerYn))
+                        noticeService.sendSmsToDevice(device.getDeviceNumber(), "600");
+                }else{
+                    // 안심존 내에 위치 할 경우
+                    if("Y".equals(preDangerYn))
+                        // 전 위치가 안심존 이탈 시 다시 원래로 복귀
+                        noticeService.sendSmsToDevice(device.getDeviceNumber(), "3600");
                 }
             }
-            // 위험 정보 저장
-            deviceDao.mergeDanger(danger);
-            if("Y".equals(danger.getDangerYn())) {
-                // 활동 반경 내에 위치 하지 않았을 경우 알림 발송 (알림 제외 처리 되지 않은 경우)
-                // 위치 전송주기 변경 요청 문자 발송
-                noticeService.checkDanger(deviceInfoModel);
-            }
-
+        }else{
+            // 알림 해제 설정을 했을경우
+            danger.setDangerYn("N");
+            if("Y".equals(preDangerYn))
+                // 전 위치가 안심존 이탈 시 다시 원래로 복귀
+                noticeService.sendSmsToDevice(device.getDeviceNumber(), "3600");
         }
+        // 위험 정보 저장
+        deviceDao.mergeDanger(danger);
 
     }
 
@@ -213,25 +255,59 @@ public class DeviceServiceImpl implements DeviceService {
         if(c_notice != null) {
             // 기존 알림 해제 설정이 되어 있는 상태 - 사용 안함으로 설정 후 재 설정
             deviceDao.updNoticeCancel(c_notice);
-
-            // 예약 문자 확인 후 취소
         }
 
-        if(option == 100) {
-            // 알림 설정 디폴트로 전환 문자 발송
-
-        }else{
+        if(option != 100) {
             // 알림 해제 설정
             long guardNo = rootService.getGuardNo();
             notice.setGuardNo(guardNo);
             deviceDao.insNotice(notice);
 
-            // 알림 해제 문자 발송 및 알림 예약 문자 발송
-
         }
-        noticeService.alram();
+        // noticeService.alram();
 
         return 1;
+    }
+
+    @Override
+    public int reqCurrentLoc(String deviceIMEI) {
+        // 현 위치 정보 요청
+
+        DeviceInfoModel device = deviceDao.getDeviceInfo(deviceIMEI);
+        TokenUserModel guard = rootService.getGuardInfo();
+
+        // 요청내용 insert
+        RequestLocModel rloc = new RequestLocModel();
+        rloc.setDeviceNo(device.getDeviceNo());
+        rloc.setReqGuardNo(guard.getGuardNo());
+        deviceDao.insReqLoc(rloc);
+
+
+        SMSModel sms = new SMSModel();
+
+        sms.setReceiver(device.getDeviceNumber());
+        sms.setMsg("어디?");
+        return smsService.sendSms(sms, "DEVICE");
+    }
+
+    public int rcvCurrentLoc(long deviceNo) {
+        // 현 위치 정보 요청에 대한 응답 수신
+        List<RequestLocModel> reqList = deviceDao.selReqLoc(deviceNo);
+        if(reqList != null) {
+            for(RequestLocModel request : reqList) {
+                // TODO : App push request.guardNo
+                GuardianModel guard = guardDao.getGuardPush(request.getReqGuardNo());
+                if(guard != null && !"".equals(guard.getPushToken()))
+                    try {
+                        fcmService.sendMessageTo(guard.getPushToken(), "위치정보수신", "요청하신 위치정보가 수신되었습니다");
+                    }catch(Exception e){
+                        logger.error(e.getMessage());
+                    }
+                deviceDao.updReqLoc(request);
+            }
+            return 1;
+        }
+        return 0;
     }
 
 }

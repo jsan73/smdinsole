@@ -27,8 +27,6 @@ public class DeviceInfoModel extends BaseVO {
     private int locCycle2;  // 위치전송 주기 야간
     private int locCycle3;  // 위치 전송 주기 응급
 
-    @ApiModelProperty(value = "단말기 배터리 정보 (%)", example = "70", required = false)
-    private int battery;
 
     private String expDate; // 만료일
 }
